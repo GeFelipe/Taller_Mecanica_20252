@@ -2,6 +2,9 @@
 CREATE DATABASE IF NOT EXISTS Taller_Mecanica;
 USE Taller_Mecanica;
 
+-- Crear usuario
+CREATE USER 'admin'@'localhost' IDENTIFIED BY 'admin1234';
+
 -- Tabla Cliente
 CREATE TABLE Cliente (
     ClienteID INT AUTO_INCREMENT PRIMARY KEY,
