@@ -13,7 +13,7 @@ CREATE TABLE Cliente (
     Telefono VARCHAR(20),
     Email VARCHAR(100),
     Direccion VARCHAR(200),
-    FechaRegistro DATE DEFAULT CURRENT_DATE
+    FechaRegistro DATE DEFAULT CURRENT_DATE --Modificar por CURRENT_TIMESTAMP ?
 );
 
 -- Tabla Vehiculo
