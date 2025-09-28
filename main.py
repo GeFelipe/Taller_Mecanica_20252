@@ -1,159 +1,62 @@
-import pyodbc
+from db_connector import select_cliente, insert_cliente, update_contacto
 
-#Clase País
-class Pais:
-    id_pais: int = 0
-    nombre_pais: str = None
+def mostrar_resultado_consulta(columns, results):
+    """Formatea y muestra los resultados de una consulta."""
+    if columns and results:
+        print("\n--- RESULTADOS DE LA CONSULTA ---")
+        print("Columnas:", columns)
+        for row in results:
+            print(f"-> {row}")
+        print("---------------------------------")
+    elif columns is None and results is None:
+        pass # La operación de modificación fue exitosa y ya fue reportada por db_connector.py
+    else:
+        print("INFO: La consulta no devolvió resultados.")
 
-    # Métodos get-set para id_pais
-    def GetIdPais(self) -> int:
-        return self.id_pais
+def main():
+    print("\n--- INICIO DEL PROGRAMA DE ACCESO A DATOS ---")
+
+    # 1. --- EJEMPLO 1: Inserción (INSERT) ---
+    # Se recomienda insertar un nuevo cliente primero para asegurar que hay datos para probar las otras operaciones.
+    print("\n[ TAREA 1: Ejecutar Inserción de Nuevo Cliente ]")
     
-    def SetIdPais(self, value: int) -> None:
-        self.id_pais = value
-
-    # Métodos get-set para nombre_pais
-    def GetNombrePais(self) -> str:
-        return self.nombre_pais
+    nuevo_nombre = "Juan"
+    nuevo_apellido = "Pérez"
+    nuevo_telefono = "555-1234"
+    nuevo_email = "juan.perez@test.com"
+    nueva_direccion = "Calle Falsa 123"
     
-    def SetNombrePais(self, value: str) -> None:
-        self.nombre_pais = value
+    # Llama al SP: agregar_nuevo_cliente
+    insert_cliente(nuevo_nombre, nuevo_apellido, nuevo_telefono, nuevo_email, nueva_direccion)
 
-#Clase comida
-class Comida:
-    id: int = 0
-    nombre: str = None
-    pais: str = None
-
-    # Métodos get-set
-    def GetId(self) -> int:
-        return self.id
-
-    def SetId(self, value: int) -> None:
-        self.id = value
-
-    def GetNombre(self) -> str:
-        return self.nombre
-
-    def SetNombre(self, value: str) -> None:
-        self.nombre = value
-
-    def GetPais(self) -> str:
-        return self.pais
-
-    def SetPais(self, value: str) -> None:
-        self.pais = value
-
-class Conexion:
-    cadena_conexion: str = """
-            Driver={MySQL ODBC 9.4 Unicode Driver};
-            Server=localhost;
-            Database=gastronomia;
-            PORT=3306;
-            user=user_python1;
-            password=1234""";
-
-    def CargarPaises(self) -> list:
-        conexion = pyodbc.connect(self.cadena_conexion)
-        consulta: str = """ SELECT id_pais, nombre_pais FROM paises order by id_pais asc; """
-        cursor = conexion.cursor()
-        cursor.execute(consulta)
-
-        lista: list = []
-        for elemento in cursor:
-            entidad: Pais = Pais()
-            entidad.SetIdPais(elemento[0])
-            entidad.SetNombrePais(elemento[1])
-            lista.append(entidad)
-
-        cursor.close()
-
-        # Imprimir resultados
-        for pais in lista:
-            print(str(pais.GetIdPais()) + ", " + pais.GetNombrePais())
-
-        return lista
+    # 2. --- EJEMPLO 2: Consulta (SELECT) ---
+    # Asume que el cliente a buscar es el primero insertado o que ya existe (ej. ID=1).
+    # ¡Asegúrate de que este ID exista en tu tabla!
+    print("\n[ TAREA 2: Ejecutar Consulta de Cliente Existente ]")
     
-    # Método para devolver comidas con su país
-    def CargarComidas(self) -> None:
-        conexion = pyodbc.connect(self.cadena_conexion)
-
-        consulta: str = """
-            SELECT c.id_comida, c.nombre_comida AS comida, p.nombre_pais AS pais
-            FROM comidas_tipicas c
-            INNER JOIN paises p ON c.id_pais = p.id_pais;
-        """
-
-        cursor = conexion.cursor()
-        cursor.execute(consulta)
-
-        lista2: list = []
-        for elemento in cursor:
-            comida: Comida = Comida()
-            comida.SetId(elemento[0])
-            comida.SetNombre(elemento[1])
-            comida.SetPais(elemento[2])
-            lista2.append(comida)
-
-        cursor.close()
-
-        # Mostrar resultados
-        for c in lista2:
-            print(str(c.GetId()) + " | " + c.GetNombre() + " -> " + c.GetPais())
-
-        return lista2
+    id_cliente_a_buscar = 1 
     
-    # INSERTAR nueva comida
-    def InsertarComida(self, nombre: str, id_pais: int) -> None:
-        conexion = pyodbc.connect(self.cadena_conexion)
-        cursor = conexion.cursor()
-        consulta: str = """
-            INSERT INTO comidas_tipicas (nombre_comida, id_pais)
-            VALUES (?, ?);
-        """
-        cursor.execute(consulta, (nombre, id_pais))
-        conexion.commit()
-        cursor.close()
-        print(f"Comida '{nombre}' insertada con éxito.")
+    # Llama al SP: obtener_datos_cliente
+    columns, results = select_cliente(id_cliente_a_buscar)
+    mostrar_resultado_consulta(columns, results)
+    
+    # 3. --- EJEMPLO 3: Actualización (UPDATE) ---
+    print("\n[ TAREA 3: Ejecutar Actualización de Contacto ]")
+    
+    id_a_actualizar = 1 
+    telefono_nuevo = "555-9999"
+    direccion_nueva = "Avenida Siempre Viva 742"
+    
+    # Llama al SP: actualizar_contacto_cliente
+    update_contacto(id_a_actualizar, telefono_nuevo, direccion_nueva)
+    
+    # Opcional: Volver a consultar para verificar la actualización
+    print("\n[ TAREA 3.1: Verificar Actualización ]")
+    columns, results = select_cliente(id_a_actualizar)
+    mostrar_resultado_consulta(columns, results)
 
-    # ACTUALIZAR comida por id
-    def ActualizarComida(self, id_comida: int, nuevo_nombre: str, nuevo_id_pais: int) -> None:
-        conexion = pyodbc.connect(self.cadena_conexion)
-        cursor = conexion.cursor()
-        consulta: str = """
-            UPDATE comidas_tipicas
-            SET nombre_comida = ?, id_pais = ?
-            WHERE id_comida = ?;
-        """
-        cursor.execute(consulta, (nuevo_nombre, nuevo_id_pais, id_comida))
-        conexion.commit()
-        cursor.close()
-        print(f"Comida con id={id_comida} actualizada.")
-
-    # ELIMINAR comida por id
-    def EliminarComida(self, id_comida: int) -> None:
-        conexion = pyodbc.connect(self.cadena_conexion)
-        cursor = conexion.cursor()
-        consulta: str = """
-            DELETE FROM comidas_tipicas
-            WHERE id_comida = ?;
-        """
-        cursor.execute(consulta, (id_comida,))
-        conexion.commit()
-        cursor.close()
-        print(f"Comida con id={id_comida} eliminada.")
+    print("\n--- FIN DEL PROGRAMA ---")
 
 
-conexion = Conexion()
-print("Conexión a base de datos MySQL")
-print("==============================")
-print("Imprimiendo paises")
-conexion.CargarPaises()
-print("=========================================")
-print("Imprimiendo paises y platos de comida tipica")
-conexion.CargarComidas()
-print("=========================================")
-#print("Ejecutando CRUD")
-#conexion.InsertarComida("Ajiaco",2)
-#conexion.ActualizarComida(17, "Updated", 1)
-#conexion.EliminarComida(11)
+if __name__ == "__main__":
+    main()
