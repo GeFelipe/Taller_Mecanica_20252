@@ -86,3 +86,27 @@ def eliminar_cliente(cliente_id):
     """Llama al SP eliminar_cliente (Borrado)."""
     print("\n--- INVOCACIÓN: UPDATE CLIENTE ---")
     return execute_stored_procedure('eliminar_cliente', cliente_id)
+
+# ----------------------------------------------------------------------
+# FUNCIONES DE CONVENIENCIA para los procedimientos de la tabla 'cita'
+# ----------------------------------------------------------------------
+
+def obtener_citas_cliente(cliente_id):
+    """Llama al SP obtener_datos_cliente (Consulta)."""
+    print("\n--- INVOCACIÓN: SELECT CLIENTE ---")
+    return execute_stored_procedure('obtener_citas_cliente', cliente_id)
+
+def agregar_nueva_cita(cliente_id_param, vehiculo_id_param, empleado_id_param, fecha_cita_param, descripcion_param):
+    """Llama al SP agregar_nuevo_cliente (Inserción)."""
+    print("\n--- INVOCACIÓN: INSERT CLIENTE ---")
+    return execute_stored_procedure('agregar_nueva_cita', cliente_id_param, vehiculo_id_param, empleado_id_param, fecha_cita_param, descripcion_param)
+
+def actualizar_estado_cita(cliente_id, estado):
+    """Llama al SP actualizar_contacto_cliente (Actualización)."""
+    print("\n--- INVOCACIÓN: UPDATE CLIENTE ---")
+    return execute_stored_procedure('actualizar_estado_cita', cliente_id, estado)
+
+def eliminar_cita(cita_id):
+    """Llama al SP eliminar_cliente (Borrado)."""
+    print("\n--- INVOCACIÓN: UPDATE CLIENTE ---")
+    return execute_stored_procedure('eliminar_cita', cita_id)

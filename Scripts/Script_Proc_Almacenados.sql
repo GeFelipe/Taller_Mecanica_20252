@@ -107,7 +107,7 @@ USE taller_mecanica;
 DELIMITER $$
 
 CREATE PROCEDURE obtener_citas_cliente (
-    IN cliente_id_param INT
+    IN cliente_id INT
 )
 BEGIN
     SELECT 
@@ -123,7 +123,7 @@ BEGIN
         INNER JOIN Vehiculo v ON c.VehiculoID = v.VehiculoID
         LEFT JOIN Empleado e ON c.EmpleadoID = e.EmpleadoID
     WHERE 
-        c.ClienteID = cliente_id_param
+        c.ClienteID = cliente_id
     ORDER BY c.FechaCita DESC;
 END$$
 
@@ -135,16 +135,16 @@ USE taller_mecanica;
 DELIMITER $$
 
 CREATE PROCEDURE actualizar_estado_cita (
-    IN cita_id_param INT,
-    IN estado_param VARCHAR(50)
+    IN cita_id INT,
+    IN estado VARCHAR(50)
 )
 BEGIN
     UPDATE 
         Cita
     SET 
-        Estado = estado_param
+        Estado = estado
     WHERE 
-        CitaID = cita_id_param;
+        CitaID = cita_id;
 END$$
 
 DELIMITER ;
@@ -155,11 +155,11 @@ USE taller_mecanica;
 DELIMITER $$
 
 CREATE PROCEDURE eliminar_cita (
-    IN cita_id_param INT
+    IN cita_id INT
 )
 BEGIN
     DELETE FROM Cita
-    WHERE CitaID = cita_id_param;
+    WHERE CitaID = cita_id;
 END$$
 
 DELIMITER ;
