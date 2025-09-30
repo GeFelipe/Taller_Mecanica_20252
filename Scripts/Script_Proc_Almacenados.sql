@@ -80,3 +80,88 @@ END$$
 
 DELIMITER ;
 
+-- Procedimiento para Crear Cita 
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE agregar_nueva_cita (
+    IN cliente_id_param INT,
+    IN vehiculo_id_param INT,
+    IN empleado_id_param INT,
+    IN fecha_cita_param DATETIME,
+    IN descripcion_param VARCHAR(255)
+)
+BEGIN
+    INSERT INTO 
+        Cita (ClienteID, VehiculoID, EmpleadoID, FechaCita, Descripcion)
+    VALUES 
+        (cliente_id_param, vehiculo_id_param, empleado_id_param, fecha_cita_param, descripcion_param);
+END$$
+
+DELIMITER ;
+
+-- Procedimiento para obtener citas por cliente
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE obtener_citas_cliente (
+    IN cliente_id_param INT
+)
+BEGIN
+    SELECT 
+        c.CitaID,
+        c.FechaCita,
+        c.Descripcion,
+        c.Estado,
+        v.Placa AS Vehiculo,
+        e.Nombre AS EmpleadoNombre,
+        e.Apellido AS EmpleadoApellido
+    FROM 
+        Cita c
+        INNER JOIN Vehiculo v ON c.VehiculoID = v.VehiculoID
+        LEFT JOIN Empleado e ON c.EmpleadoID = e.EmpleadoID
+    WHERE 
+        c.ClienteID = cliente_id_param
+    ORDER BY c.FechaCita DESC;
+END$$
+
+DELIMITER ;
+
+-- Procedimiento para actualizarestado de la cita 
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE actualizar_estado_cita (
+    IN cita_id_param INT,
+    IN estado_param VARCHAR(50)
+)
+BEGIN
+    UPDATE 
+        Cita
+    SET 
+        Estado = estado_param
+    WHERE 
+        CitaID = cita_id_param;
+END$$
+
+DELIMITER ;
+
+-- Procedimiento para eliminar cita 
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE eliminar_cita (
+    IN cita_id_param INT
+)
+BEGIN
+    DELETE FROM Cita
+    WHERE CitaID = cita_id_param;
+END$$
+
+DELIMITER ;
+
+
