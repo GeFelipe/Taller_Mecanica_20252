@@ -24,7 +24,7 @@ def execute_stored_procedure(procedure_name, *parameters):
         # 1. Establecer la conexión a la base de datos
         cnxn = pyodbc.connect(CONNECTION_STRING)
         cursor = cnxn.cursor()
-        print("✅ Conexión establecida con la base de datos 'gastronomia'.")
+        print("✅ Conexión establecida con la base de datos 'Taller_Mecanica'.")
         
         # 2. Preparar la sintaxis ODBC {CALL ...}
         # El signo '?' es el marcador de posición para cada parámetro
@@ -81,3 +81,8 @@ def update_contacto(cliente_id, telefono, direccion):
     """Llama al SP actualizar_contacto_cliente (Actualización)."""
     print("\n--- INVOCACIÓN: UPDATE CLIENTE ---")
     return execute_stored_procedure('actualizar_contacto_cliente', cliente_id, telefono, direccion)
+
+def eliminar_cliente(cliente_id):
+    """Llama al SP eliminar_cliente (Borrado)."""
+    print("\n--- INVOCACIÓN: UPDATE CLIENTE ---")
+    return execute_stored_procedure('eliminar_cliente', cliente_id)

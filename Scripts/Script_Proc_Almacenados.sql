@@ -64,3 +64,19 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+-- Procedimiento para eliminar un cliente
+
+USE taller_mecanica
+DELIMITER $$
+
+CREATE PROCEDURE eliminar_cliente (
+    IN id_param INT
+)
+BEGIN
+    DELETE FROM cliente
+    WHERE ClienteID = id_param;
+END$$
+
+DELIMITER ;
+

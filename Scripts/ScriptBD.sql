@@ -3,7 +3,7 @@ CREATE DATABASE IF NOT EXISTS Taller_Mecanica;
 USE Taller_Mecanica;
 
 -- Crear usuario
-CREATE USER 'admin'@'localhost' IDENTIFIED BY 'admin1234';
+-- CREATE USER 'admin'@'localhost' IDENTIFIED BY 'admin1234';
 
 -- Tabla Cliente
 CREATE TABLE Cliente (
@@ -13,7 +13,7 @@ CREATE TABLE Cliente (
     Telefono VARCHAR(20),
     Email VARCHAR(100),
     Direccion VARCHAR(200),
-    FechaRegistro DATE DEFAULT CURRENT_DATE --Modificar por CURRENT_TIMESTAMP ?
+    FechaRegistro DATE DEFAULT CURRENT_DATE -- Modificar por CURRENT_TIMESTAMP ?
 );
 
 -- Tabla Vehiculo
