@@ -416,6 +416,8 @@ END$$
 DELIMITER ;
 
 -- Procedimiento para obtener pagos por factura
+USE taller_mecanica;
+DELIMITER $$
 
 CREATE PROCEDURE obtener_pagos_por_factura (
     IN factura_id INT
@@ -439,6 +441,8 @@ END$$
 DELIMITER ;
 
 -- Procedimiento para actualizar un pago
+USE taller_mecanica;
+DELIMITER $$
 
 CREATE PROCEDURE actualizar_pago (
     IN pago_id INT,
@@ -546,3 +550,441 @@ END$$
 DELIMITER ;
 
 
+-- Procedimiento para crear registros de vehículos
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE crear_vehiculo (
+    IN cliente_id_param INT,
+    IN placa_param VARCHAR(20),
+    IN marca_param VARCHAR(50),
+    IN modelo_param VARCHAR(50),
+    IN anio_param INT,
+    IN vin_param VARCHAR(50),
+    IN color_param VARCHAR(30)
+)
+BEGIN
+    INSERT INTO 
+        Vehiculo (ClienteID, Placa, Marca, Modelo, Anio, VIN, Color)
+    VALUES 
+        (cliente_id_param, placa_param, marca_param, modelo_param, anio_param, vin_param, color_param);
+END$$
+
+DELIMITER ;
+
+-- Procedimiento para modificar un registro de vehículo
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE modificar_vehiculo (
+    IN vehiculo_id_param INT,
+    IN cliente_id_param INT,
+    IN placa_param VARCHAR(20),
+    IN marca_param VARCHAR(50),
+    IN modelo_param VARCHAR(50),
+    IN anio_param INT,
+    IN vin_param VARCHAR(50),
+    IN color_param VARCHAR(30)
+)
+BEGIN
+    UPDATE 
+        Vehiculo
+    SET 
+        ClienteID = cliente_id_param,
+        Placa = placa_param,
+        Marca = marca_param,
+        Modelo = modelo_param,
+        Anio = anio_param,
+        VIN = vin_param,
+        Color = color_param
+    WHERE 
+        VehiculoID = vehiculo_id_param;
+END$$
+
+DELIMITER ;
+
+-- Procedimiento para consultar el registro de un vehículo
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE obtener_vehiculo_por_id (
+    IN vehiculo_id_param INT
+)
+BEGIN
+    SELECT 
+        VehiculoID, 
+        ClienteID, 
+        Placa, 
+        Marca, 
+        Modelo, 
+        Anio, 
+        VIN, 
+        Color
+    FROM 
+        Vehiculo
+    WHERE 
+        VehiculoID = vehiculo_id_param;
+END$$
+
+DELIMITER ;
+
+-- Procedimiento para eliminar un vehículo
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE eliminar_vehiculo (
+    IN vehiculo_id_param INT
+)
+BEGIN
+    DELETE FROM 
+        Vehiculo
+    WHERE 
+        VehiculoID = vehiculo_id_param;
+END$$
+
+DELIMITER ;
+
+--Procedimiento almacenado para insertar un servicio
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE crear_servicio (
+    IN nombre_param VARCHAR(100),
+    IN descripcion_param VARCHAR(200),
+    IN precio_base_param DECIMAL(10,2)
+)
+BEGIN
+    INSERT INTO 
+        Servicio (Nombre, Descripcion, PrecioBase)
+    VALUES 
+        (nombre_param, descripcion_param, precio_base_param);
+END$$
+
+DELIMITER ;
+
+--Procedimiento almacenado para obtener un servicio
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE obtener_servicio_por_id (
+    IN servicio_id_param INT
+)
+BEGIN
+    SELECT 
+        ServicioID, 
+        Nombre, 
+        Descripcion, 
+        PrecioBase
+    FROM 
+        Servicio
+    WHERE 
+        ServicioID = servicio_id_param;
+END$$
+
+DELIMITER ;
+
+--Procedimiento almacenado para actualizar un servicio
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE modificar_servicio (
+    IN servicio_id_param INT,
+    IN nombre_param VARCHAR(100),
+    IN descripcion_param VARCHAR(200),
+    IN precio_base_param DECIMAL(10,2)
+)
+BEGIN
+    UPDATE 
+        Servicio
+    SET 
+        Nombre = nombre_param,
+        Descripcion = descripcion_param,
+        PrecioBase = precio_base_param
+    WHERE 
+        ServicioID = servicio_id_param;
+END$$
+
+DELIMITER ;
+
+-- Procedimiento almacenado para eliminar un servicio
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE eliminar_servicio (
+    IN servicio_id_param INT
+)
+BEGIN
+    DELETE FROM 
+        Servicio
+    WHERE 
+        ServicioID = servicio_id_param;
+END$$
+
+DELIMITER ;
+
+--Procedimiento almacenado para crear respuesto
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE crear_repuesto (
+    IN proveedor_id_param INT,
+    IN nombre_param VARCHAR(100),
+    IN descripcion_param VARCHAR(200),
+    IN precio_unitario_param DECIMAL(10,2),
+    IN stock_actual_param INT
+)
+BEGIN
+    INSERT INTO 
+        Repuesto (ProveedorID, Nombre, Descripcion, PrecioUnitario, StockActual)
+    VALUES 
+        (proveedor_id_param, nombre_param, descripcion_param, precio_unitario_param, stock_actual_param);
+END$$
+
+DELIMITER ;
+
+--Procedimiento para consultar un respuesto
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE obtener_repuesto_por_id (
+    IN repuesto_id_param INT
+)
+BEGIN
+    SELECT 
+        RepuestoID, 
+        ProveedorID, 
+        Nombre, 
+        Descripcion, 
+        PrecioUnitario, 
+        StockActual
+    FROM 
+        Repuesto
+    WHERE 
+        RepuestoID = repuesto_id_param;
+END$$
+
+DELIMITER ;
+
+--Procedimiento para modificar un repuesto
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE modificar_repuesto (
+    IN repuesto_id_param INT,
+    IN proveedor_id_param INT,
+    IN nombre_param VARCHAR(100),
+    IN descripcion_param VARCHAR(200),
+    IN precio_unitario_param DECIMAL(10,2),
+    IN stock_actual_param INT
+)
+BEGIN
+    UPDATE 
+        Repuesto
+    SET 
+        ProveedorID = proveedor_id_param,
+        Nombre = nombre_param,
+        Descripcion = descripcion_param,
+        PrecioUnitario = precio_unitario_param,
+        StockActual = stock_actual_param
+    WHERE 
+        RepuestoID = repuesto_id_param;
+END$$
+
+DELIMITER ;
+
+--Procedimiento para eliminar un repuesto
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE eliminar_repuesto (
+    IN repuesto_id_param INT
+)
+BEGIN
+    DELETE FROM 
+        Repuesto
+    WHERE 
+        RepuestoID = repuesto_id_param;
+END$$
+
+DELIMITER ;
+
+-- Procedimiento para crear un proveedor
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE crear_proveedor (
+    IN nombre_param VARCHAR(100),
+    IN telefono_param VARCHAR(20),
+    IN email_param VARCHAR(100),
+    IN direccion_param VARCHAR(200)
+)
+BEGIN
+    INSERT INTO 
+        Proveedor (Nombre, Telefono, Email, Direccion)
+    VALUES 
+        (nombre_param, telefono_param, email_param, direccion_param);
+END$$
+
+DELIMITER ;
+
+--Procedimiento para consultar un proveedor
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE obtener_proveedor_por_id (
+    IN proveedor_id_param INT
+)
+BEGIN
+    SELECT 
+        ProveedorID, 
+        Nombre, 
+        Telefono, 
+        Email, 
+        Direccion
+    FROM 
+        Proveedor
+    WHERE 
+        ProveedorID = proveedor_id_param;
+END$$
+
+DELIMITER ;
+
+--Procedimiento para modificar un proveedor
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE modificar_proveedor (
+    IN proveedor_id_param INT,
+    IN nombre_param VARCHAR(100),
+    IN telefono_param VARCHAR(20),
+    IN email_param VARCHAR(100),
+    IN direccion_param VARCHAR(200)
+)
+BEGIN
+    UPDATE 
+        Proveedor
+    SET 
+        Nombre = nombre_param,
+        Telefono = telefono_param,
+        Email = email_param,
+        Direccion = direccion_param
+    WHERE 
+        ProveedorID = proveedor_id_param;
+END$$
+
+DELIMITER ;
+
+--Procedimiento para eliminar un proveedor
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE eliminar_proveedor (
+    IN proveedor_id_param INT
+)
+BEGIN
+    DELETE FROM 
+        Proveedor
+    WHERE 
+        ProveedorID = proveedor_id_param;
+END$$
+
+DELIMITER ;
+
+--Procedimiento para crear factura
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE crear_factura (
+    IN orden_trabajo_id_param INT,
+    IN subtotal_param DECIMAL(10,2),
+    IN iva_param DECIMAL(10,2),
+    IN total_param DECIMAL(10,2)
+)
+BEGIN
+    INSERT INTO 
+        Factura (OrdenTrabajoID, Subtotal, IVA, Total)
+    VALUES 
+        (orden_trabajo_id_param, subtotal_param, iva_param, total_param);
+END$$
+
+DELIMITER ;
+
+--Procedimiento para consultar factura
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE obtener_factura_por_id (
+    IN factura_id_param INT
+)
+BEGIN
+    SELECT 
+        FacturaID, 
+        OrdenTrabajoID, 
+        FechaEmision, 
+        Subtotal, 
+        IVA, 
+        Total
+    FROM 
+        Factura
+    WHERE 
+        FacturaID = factura_id_param;
+END$$
+
+DELIMITER ;
+
+--Procedimiento para modificar factura
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE modificar_factura (
+    IN factura_id_param INT,
+    IN subtotal_param DECIMAL(10,2),
+    IN iva_param DECIMAL(10,2),
+    IN total_param DECIMAL(10,2)
+)
+BEGIN
+    UPDATE 
+        Factura
+    SET 
+        Subtotal = subtotal_param,
+        IVA = iva_param,
+        Total = total_param
+    WHERE 
+        FacturaID = factura_id_param;
+END$$
+
+DELIMITER ;
+
+--Procedimiento para eliminar factura
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE eliminar_factura (
+    IN factura_id_param INT
+)
+BEGIN
+    DELETE FROM 
+        Factura
+    WHERE 
+        FacturaID = factura_id_param;
+END$$
+
+DELIMITER ;

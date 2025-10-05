@@ -91,15 +91,15 @@ def eliminar_cliente(cliente_id):
 # FUNCIONES DE CONVENIENCIA para los procedimientos de la tabla 'cita'
 # ----------------------------------------------------------------------
 
-def obtener_citas_cliente(cliente_id):
+def obtener_citas_cliente(ClienteID):
     """Llama al SP obtener_datos_cliente (Consulta)."""
     print("\n--- INVOCACIÓN: SELECT CLIENTE ---")
-    return execute_stored_procedure('obtener_citas_cliente', cliente_id)
+    return execute_stored_procedure('obtener_citas_cliente', ClienteID)
 
-def agregar_nueva_cita(cliente_id_param, vehiculo_id_param, empleado_id_param, fecha_cita_param, descripcion_param):
+def agregar_nueva_cita(ClienteID, VehiculoID, IDEmpleado, FechaCita, Descripcion):
     """Llama al SP agregar_nueva_cita (Inserción)."""
     print("\n--- INVOCACIÓN: INSERT CLIENTE ---")
-    return execute_stored_procedure('agregar_nueva_cita', cliente_id_param, vehiculo_id_param, empleado_id_param, fecha_cita_param, descripcion_param)
+    return execute_stored_procedure('agregar_nueva_cita', ClienteID, VehiculoID, IDEmpleado, FechaCita, Descripcion)
 
 def actualizar_estado_cita(cliente_id, estado):
     """Llama al SP actualizar_estado_cita (Actualización)."""
@@ -193,10 +193,133 @@ def obtener_historiales_todos_vehiculos():
     print("\n--- INVOCACIÓN: OBTENER HISTORIAL VEHÍCULOS ---")
     return execute_stored_procedure('obtener_historiales_todos_vehiculos')
 
+# ----------------------------------------------------------------------
+# FUNCIONES DE CONVENIENCIA para los procedimientos de la tabla 'vehiculo'
+# ----------------------------------------------------------------------
 
-# PARCE FALTA CREAR LOS DEMÁS MÉTODOS PARA FACTURA (ELIMINAR, ACTUALIZAR, OBTENER FACTURAS, OBTENER INFO DE UNA FACTURA)
-# FALTAN TODOS LOS PRODECIMIENTOS PARA LA TABLA VEHÍCULO (CREAR, MODIFICAR, ELIMINAR, OBTENER)
-# FALTAN TODOS LOS PRODECIMIENTOS PARA LA TABLA SERVICIO (CREAR, MODIFICAR, ELIMINAR, OBTENER)
-# FALTAN TODOS LOS PRODECIMIENTOS PARA LA TABLA REPUESTO (CREAR, MODIFICAR, ELIMINAR, OBTENER)
-# FALTAN TODOS LOS PRODECIMIENTOS PARA LA TABLA PROVEEDOR (CREAR, MODIFICAR, ELIMINAR, OBTENER)
+def crear_vehiculo(ClienteID, Placa, Marca, Modelo, Anio, VIN, Color):
+    """Llama al SP crear_vehiculo (Inserción)."""
+    print("\n--- INVOCACIÓN: INSERT VEHICULO ---")
+    return execute_stored_procedure('agregar_nuevo_vehículo', ClienteID, Placa, Marca, Modelo, Anio, VIN, Color)
+
+def modificar_vehiculo(VehiculoID, ClienteID, Placa, Marca, Modelo, Anio, VIN, Color):
+    """Llama al SP modificar_vehiculo (Actualización)."""
+    print("\n--- INVOCACIÓN: UPDATE VEHICULO ---")
+    return execute_stored_procedure('modificar_vehiculo',VehiculoID, ClienteID, Placa, Marca, Modelo, Anio, VIN, Color)
+
+def obtener_vehiculo_por_id(VehiculoID ):
+    """Llama al SP obtener_datos_cliente (Consulta)."""
+    print("\n--- INVOCACIÓN: SELECT VEHICULO ---")
+    return execute_stored_procedure('obtener_vehiculo_por_id',VehiculoID)
+
+def eliminar_vehiculo(VehiculoID):
+    """Llama al SP eliminar_vehiculo (Borrado)."""
+    print("\n--- INVOCACIÓN: DELETE VEHICULO ---")
+    return execute_stored_procedure('eliminar_vehiculo', VehiculoID)
+
+
+# ----------------------------------------------------------------------
+# FUNCIONES DE CONVENIENCIA para los procedimientos de la tabla 'servicio'
+# ----------------------------------------------------------------------
+
+def crear_servicio(Nombre ,Descripcion , PrecioBase ):
+    """Llama al SP crear_servicio (Inserción)."""
+    print("\n--- INVOCACIÓN: INSERT SERVICIO ---")
+    return execute_stored_procedure('crear_servicio', Nombre ,Descripcion , PrecioBase)
+
+def obtener_servicio_por_id(ServicioID):
+    """Llama al SP obtener_servicio_por_id (Actualización)."""
+    print("\n--- INVOCACIÓN: OBTENER SERVICIO ---")
+    return execute_stored_procedure('obtener_servicio_por_id',ServicioID)
+
+def modificar_servicio(ServicioID, Nombre ,Descripcion , PrecioBase ):
+    """Llama al SP modificar_servicio (Consulta)."""
+    print("\n--- INVOCACIÓN: UPDATE SERVICIO ---")
+    return execute_stored_procedure('modificar_servicio',ServicioID, Nombre, Descripcion ,PrecioBase )
+
+def eliminar_servicio(ServicioID):
+    """Llama al SP eliminar_servicio (Borrado)."""
+    print("\n--- INVOCACIÓN: DELETE SERVICIO ---")
+    return execute_stored_procedure('eliminar_servicio', ServicioID)
+
+
+# ----------------------------------------------------------------------
+# FUNCIONES DE CONVENIENCIA para los procedimientos de la tabla 'repuesto'
+# ----------------------------------------------------------------------
+
+def crear_repuesto(proveedor_id, nombre, descripcion, precio_unitario, stock_actual):
+    """Llama al SP crear_repuesto (Inserción)."""
+    print("\n--- INVOCACIÓN: INSERT REPUESTO ---")
+    return execute_stored_procedure('crear_repuesto', proveedor_id, nombre, descripcion, precio_unitario, stock_actual)
+
+def obtener_repuesto_por_id(repuesto_id):
+    """Llama al SP obtener_repuesto_por_id (Consulta)."""
+    print("\n--- INVOCACIÓN: OBTENER REPUESTO ---")
+    return execute_stored_procedure('obtener_repuesto_por_id', repuesto_id)
+
+def modificar_repuesto(repuesto_id, proveedor_id, nombre, descripcion, precio_unitario, stock_actual):
+    """Llama al SP modificar_repuesto (Actualización)."""
+    print("\n--- INVOCACIÓN: UPDATE REPUESTO ---")
+    return execute_stored_procedure('modificar_repuesto', repuesto_id, proveedor_id, nombre, descripcion, precio_unitario, stock_actual)
+
+def eliminar_repuesto(repuesto_id):
+    """Llama al SP eliminar_repuesto (Borrado)."""
+    print("\n--- INVOCACIÓN: DELETE REPUESTO ---")
+    return execute_stored_procedure('eliminar_repuesto', repuesto_id)
+
+# ----------------------------------------------------------------------
+# FUNCIONES DE CONVENIENCIA para los procedimientos de la tabla 'proveedor'
+# ----------------------------------------------------------------------
+
+def crear_proveedor(nombre, telefono, email, direccion):
+    """Llama al SP crear_proveedor (Inserción)."""
+    print("\n--- INVOCACIÓN: INSERT PROVEEDOR ---")
+    return execute_stored_procedure('crear_proveedor', nombre, telefono, email, direccion)
+
+def obtener_proveedor_por_id(proveedor_id):
+    """Llama al SP obtener_proveedor_por_id (Consulta)."""
+    print("\n--- INVOCACIÓN: OBTENER PROVEEDOR ---")
+    return execute_stored_procedure('obtener_proveedor_por_id', proveedor_id)
+
+def modificar_proveedor(proveedor_id, nombre, telefono, email, direccion):
+    """Llama al SP modificar_proveedor (Actualización)."""
+    print("\n--- INVOCACIÓN: UPDATE PROVEEDOR ---")
+    return execute_stored_procedure('modificar_proveedor', proveedor_id, nombre, telefono, email, direccion)
+
+def eliminar_proveedor(proveedor_id):
+    """Llama al SP eliminar_proveedor (Borrado)."""
+    print("\n--- INVOCACIÓN: DELETE PROVEEDOR ---")
+    return execute_stored_procedure('eliminar_proveedor', proveedor_id)
+
+# ----------------------------------------------------------------------
+# FUNCIONES DE CONVENIENCIA para los procedimientos de la tabla 'proveedor'
+# ----------------------------------------------------------------------
+
+def crear_factura(orden_trabajo_id, subtotal, iva, total):
+    """Llama al SP crear_factura (Inserción)."""
+    print("\n--- INVOCACIÓN: INSERT FACTURA ---")
+    return execute_stored_procedure('crear_factura', orden_trabajo_id, subtotal, iva, total)
+
+def obtener_factura_por_id(factura_id):
+    """Llama al SP obtener_factura_por_id (Consulta)."""
+    print("\n--- INVOCACIÓN: OBTENER FACTURA ---")
+    return execute_stored_procedure('obtener_factura_por_id', factura_id)
+
+def modificar_factura(factura_id, subtotal, iva, total):
+    """Llama al SP modificar_factura (Actualización)."""
+    print("\n--- INVOCACIÓN: UPDATE FACTURA ---")
+    return execute_stored_procedure('modificar_factura', factura_id, subtotal, iva, total)
+
+def eliminar_factura(factura_id):
+    """Llama al SP eliminar_factura (Borrado)."""
+    print("\n--- INVOCACIÓN: DELETE FACTURA ---")
+    return execute_stored_procedure('eliminar_factura', factura_id)
+
+
+# PARCE FALTA CREAR LOS DEMÁS MÉTODOS PARA FACTURA (ELIMINAR, ACTUALIZAR, OBTENER FACTURAS, OBTENER INFO DE UNA FACTURA)  - ok, teateados
+# FALTAN TODOS LOS PRODECIMIENTOS PARA LA TABLA VEHICULO (CREAR, MODIFICAR, ELIMINAR, OBTENER) - ok, teateados
+# FALTAN TODOS LOS PRODECIMIENTOS PARA LA TABLA SERVICIO (CREAR, MODIFICAR, ELIMINAR, OBTENER) - ok, testeados
+# FALTAN TODOS LOS PRODECIMIENTOS PARA LA TABLA REPUESTO (CREAR, MODIFICAR, ELIMINAR, OBTENER) - ok, testeados
+# FALTAN TODOS LOS PRODECIMIENTOS PARA LA TABLA PROVEEDOR (CREAR, MODIFICAR, ELIMINAR, OBTENER) - ok, testedos
+# cliente - ok, teateados
 # NO PUDE PROBAR PORQUE ME SALE UN ERROR EN LA CLASE ESTA CLASE, EN LA IMPORTACIÓN DE LA CLASE DE pyodbc
