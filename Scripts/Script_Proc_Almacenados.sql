@@ -204,13 +204,13 @@ DELIMITER $$
 
 CREATE PROCEDURE agregar_detalle_trabajo (
     IN orden_trabajo_id INT,
-    IN descripcion_param VARCHAR(200),
-    IN horas_param DECIMAL(5,2),
-    IN costo_param DECIMAL(10,2)
+    IN descripcion VARCHAR(200),
+    IN horas DECIMAL(5,2),
+    IN costo DECIMAL(10,2)
 )
 BEGIN
     INSERT INTO detalletrabajo (OrdenTrabajoID, Descripcion, ManoDeObraHoras, CostoManoDeObra)
-    VALUES (orden_trabajo_id, descripcion_param, horas_param, costo_param);
+    VALUES (orden_trabajo_id, descripcion, horas, costo);
 END$$
 
 DELIMITER ;
@@ -223,7 +223,7 @@ DELIMITER $$
 CREATE PROCEDURE agregar_repuesto_a_orden (
     IN orden_trabajo_id INT,
     IN repuesto_id INT,
-    IN cantidad_param INT
+    IN cantidad INT
 )
 BEGIN
     DECLARE precio_unitario DECIMAL(10,2);
@@ -235,16 +235,16 @@ BEGIN
 
     -- Insertamos el detalle del repuesto dentro de la orden de trabajo
     INSERT INTO ordentrabajarepuesto (OrdenTrabajoID, RepuestoID, Cantidad, PrecioUnitario)
-    VALUES (orden_trabajo_id, repuesto_id, cantidad_param, precio_unitario);
+    VALUES (orden_trabajo_id, repuesto_id, cantidad, precio_unitario);
 
     -- Actualizamos el inventarion - reduciendo el stiock por el repuesto que sacamos
     UPDATE repuesto
-    SET StockActual = StockActual - cantidad_param
+    SET StockActual = StockActual - cantidad
     WHERE RepuestoID = repuesto_id;
 
     -- Registramos la salida del respuesto.
     INSERT INTO inventariomovimiento (RepuestoID, TipoMovimiento, Cantidad, FechaMovimiento)
-    VALUES (repuesto_id, 'Salida', cantidad_param, NOW());
+    VALUES (repuesto_id, 'Salida', cantidad, NOW());
 END$$
 
 DELIMITER ;
@@ -257,7 +257,7 @@ DELIMITER $$
 CREATE PROCEDURE agregar_servicio_a_orden (
     IN orden_trabajo_id INT,
     IN servicio_id INT,
-    IN cantidad_param INT
+    IN cantidad INT
 )
 BEGIN
     DECLARE precio_base DECIMAL(10,2);
@@ -267,7 +267,7 @@ BEGIN
     WHERE ServicioID = servicio_id;
 
     INSERT INTO ordentrabajoservicio (OrdenTrabajoID, ServicioID, Cantidad, PrecioUnitario)
-    VALUES (orden_trabajo_id, servicio_id, cantidad_param, precio_base);
+    VALUES (orden_trabajo_id, servicio_id, cantidad, precio_base);
 END$$
 
 DELIMITER ;
@@ -302,7 +302,6 @@ BEGIN
 END$$
 
 DELIMITER ;
-
 
 -- Procedimiento para consultar orden de servicio completa
 
@@ -391,12 +390,69 @@ DELIMITER $$
 
 CREATE PROCEDURE registrar_pago (
     IN factura_id INT,
-    IN monto_param DECIMAL(10,2),
-    IN metodo_param ENUM('Efectivo','Tarjeta','Transferencia')
+    IN monto DECIMAL(10,2),
+    IN metodo ENUM('Efectivo','Tarjeta','Transferencia')
 )
 BEGIN
     INSERT INTO pago (FacturaID, Monto, FechaPago, MetodoPago)
-    VALUES (factura_id, monto_param, NOW(), metodo_param);
+    VALUES (factura_id, monto, NOW(), metodo);
+END$$
+
+DELIMITER ;
+
+-- Procedimiento para eliminar un pago 
+
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE eliminar_pago (
+    IN pago_id INT
+)
+BEGIN
+    DELETE FROM Pago
+    WHERE PagoID = pago_id;
+END$$
+
+DELIMITER ;
+
+-- Procedimiento para obtener pagos por factura
+
+CREATE PROCEDURE obtener_pagos_por_factura (
+    IN factura_id INT
+)
+BEGIN
+    SELECT 
+        p.PagoID,
+        p.FacturaID,
+        f.FechaEmision,
+        p.Monto,
+        p.FechaPago,
+        p.MetodoPago
+    FROM 
+        Pago p
+    INNER JOIN 
+        Factura f ON p.FacturaID = f.FacturaID
+    WHERE 
+        p.FacturaID = factura_id;
+END$$
+
+DELIMITER ;
+
+-- Procedimiento para actualizar un pago
+
+CREATE PROCEDURE actualizar_pago (
+    IN pago_id INT,
+    IN nuevo_monto DECIMAL(10,2),
+    IN nuevo_metodo ENUM('Efectivo','Tarjeta','Transferencia')
+)
+BEGIN
+    UPDATE Pago
+    SET 
+        Monto = nuevo_monto,
+        MetodoPago = nuevo_metodo,
+        FechaPago = NOW()
+    WHERE 
+        PagoID = pago_id;
 END$$
 
 DELIMITER ;
@@ -407,7 +463,7 @@ USE taller_mecanica;
 DELIMITER $$
 
 CREATE PROCEDURE obtener_historial_vehiculo_por_id (
-    IN vehiculo_id_param INT
+    IN vehiculo_id INT
 )
 BEGIN
     SELECT 
@@ -443,7 +499,7 @@ BEGIN
         LEFT JOIN empleado e ON o.EmpleadoID = e.EmpleadoID
         LEFT JOIN cita ct ON v.VehiculoID = ct.VehiculoID
     WHERE 
-        v.VehiculoID = vehiculo_id_param
+        v.VehiculoID = vehiculo_id
     ORDER BY 
         h.FechaRegistro DESC, o.FechaInicio DESC;
 END$$
