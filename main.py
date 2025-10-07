@@ -2,7 +2,7 @@ from db_connector import select_cliente, insert_cliente, update_contacto
 from db_connector import crear_vehiculo, modificar_vehiculo, obtener_vehiculo_por_id, eliminar_vehiculo
 from db_connector import execute_stored_procedure, crear_proveedor, obtener_proveedor_por_id, modificar_proveedor, eliminar_proveedor
 from db_connector import execute_stored_procedure, crear_factura, obtener_factura_por_id, modificar_factura, eliminar_factura
-from db_connector import execute_stored_procedure, obtener_citas_cliente, agregar_nueva_cita, actualizar_estado_cita, eliminar_cita 
+from db_connector import execute_stored_procedure, crear_cita, obtener_cita_por_id, actualizar_estado_cita, eliminar_cita
 
 
 #from db_connector import execute_stored_procedure # Usamos la función base
@@ -423,55 +423,51 @@ def main():
     # IDs EXISTENTES PARA PRUEBA
     CLIENTE_ID_EXISTENTE = 1 
     VEHICULO_ID_EXISTENTE = 5
-    EMPLEADO_ID_EXISTENTE = 1 # Asumimos la existencia de un empleado
-    CITA_ID_PRUEBA = 1 # ID de la cita existente para las pruebas
+    CITA_ID_PRUEBA = 2 # ID de la cita para pruebas
 
     # 1. --- TAREA 1: Creación (INSERT) ---
-    print("\n[ TAREA 1: Ejecutar Creación de Nueva Cita ]")
+    #print("\n[ TAREA 1: Ejecutar Creación de Nueva Cita ]")
     
-    # Parámetros para el SP: agregar_nueva_cita
+    # Parámetros para el SP: crear_cita
     cliente_id = CLIENTE_ID_EXISTENTE
     vehiculo_id = VEHICULO_ID_EXISTENTE
-    empleado_id = EMPLEADO_ID_EXISTENTE
-    # Nota: Usamos un formato de fecha compatible con MySQL (YYYY-MM-DD HH:MM:SS)
-    fecha_cita = "2025-10-15 14:30:00" 
-    descripcion = "Revisión de frenos delanteros."
+    fecha_hora = "2025-11-20 09:00:00" 
+    motivo = "Revisión general y cambio de aceite."
     
-    # Llamada al SP: agregar_nueva_cita
-    agregar_nueva_cita(cliente_id, vehiculo_id, empleado_id, fecha_cita, descripcion)
+    # Llamada al SP: crear_cita
+    #crear_cita(cliente_id, vehiculo_id, fecha_hora, motivo)
 
-    # 2. --- TAREA 2: Consulta por Cliente (SELECT) ---
-    print("\n[ TAREA 2: Ejecutar Consulta de Citas por Cliente ]")
+    # # 2. --- TAREA 2: Consulta por ID (SELECT) ---
+    #print("\n[ TAREA 2: Ejecutar Consulta de Cita Existente ]")
     
-    # Llamada al SP: obtener_citas_cliente
-    columns, results = obtener_citas_cliente(CLIENTE_ID_EXISTENTE)
-    mostrar_resultado_consulta(columns, results)
+     # Llamada al SP: obtener_cita_por_id
+    #columns, results = obtener_cita_por_id(CITA_ID_PRUEBA)
+    #mostrar_resultado_consulta(columns, results)
     
-    # 3. --- TAREA 3: Actualización (UPDATE) ---
-    # Usaremos el ID de la cita que ya existe (CITA_ID_PRUEBA = 1)
-    print("\n[ TAREA 3: Ejecutar Actualización de Estado de Cita ]")
+     # 3. --- TAREA 3: Actualización de Estado (UPDATE) ---
+    #print("\n[ TAREA 3: Ejecutar Actualización de Estado ]")
     
-    cita_id_a_actualizar = CITA_ID_PRUEBA
-    nuevo_estado = "Confirmada" # Nuevo estado
+    #cita_id_a_actualizar = CITA_ID_PRUEBA
+    #nuevo_estado = "Atendida" # Nuevo estado
     
-    # Llamada al SP: actualizar_estado_cita
-    actualizar_estado_cita(cita_id_a_actualizar, nuevo_estado)
+    # # Llamada al SP: actualizar_estado_cita
+    #actualizar_estado_cita(cita_id_a_actualizar, nuevo_estado)
     
-    # Opcional: Volver a consultar para verificar la Actualización (usando el SP de Cliente)
-    print("\n[ TAREA 3.1: Verificar Actualización de Estado ]")
-    columns, results = obtener_citas_cliente(CLIENTE_ID_EXISTENTE)
-    mostrar_resultado_consulta(columns, results)
+    # # Opcional: Volver a consultar para verificar la Actualización
+    #print("\n[ TAREA 3.1: Verificar Estado Actualizado ]")
+    #columns, results = obtener_cita_por_id(CITA_ID_PRUEBA)
+    #mostrar_resultado_consulta(columns, results)
 
 
-    # 4. --- TAREA 4: Eliminación (DELETE) ---
+    # # 4. --- TAREA 4: Eliminación (DELETE) ---
     print("\n[ TAREA 4: Ejecutar Eliminación de Cita ]")
     
-    # Llamada al SP: eliminar_cita
+    # # Llamada al SP: eliminar_cita
     eliminar_cita(CITA_ID_PRUEBA)
     
-    # Opcional: Volver a consultar para verificar la Eliminación
+    # # Opcional: Volver a consultar para verificar la Eliminación
     print("\n[ TAREA 4.1: Verificar Eliminación ]")
-    columns, results = obtener_citas_cliente(CLIENTE_ID_EXISTENTE)
+    columns, results = obtener_cita_por_id(CITA_ID_PRUEBA)
     mostrar_resultado_consulta(columns, results)
 
     print("\n--- FIN DEL PROGRAMA ---")

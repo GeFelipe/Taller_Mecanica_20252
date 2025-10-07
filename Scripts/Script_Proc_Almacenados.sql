@@ -88,7 +88,6 @@ DELIMITER $$
 CREATE PROCEDURE agregar_nueva_cita (
     IN cliente_id_param INT,
     IN vehiculo_id_param INT,
-    IN empleado_id_param INT,
     IN fecha_cita_param DATETIME,
     IN descripcion_param VARCHAR(255)
 )
