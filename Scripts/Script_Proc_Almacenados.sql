@@ -85,54 +85,42 @@ DELIMITER ;
 USE taller_mecanica;
 DELIMITER $$
 
+-- Procedimiento para crear una nueva cita
 CREATE PROCEDURE agregar_nueva_cita (
     IN cliente_id_param INT,
     IN vehiculo_id_param INT,
-    IN fecha_cita_param DATETIME,
-    IN descripcion_param VARCHAR(255)
+    IN fecha_hora_param DATETIME,
+    IN motivo_param VARCHAR(200)
 )
 BEGIN
     INSERT INTO 
-        Cita (ClienteID, VehiculoID, EmpleadoID, FechaCita, Descripcion)
+        Cita (ClienteID, VehiculoID, FechaHora, Motivo)
     VALUES 
-        (cliente_id_param, vehiculo_id_param, empleado_id_param, fecha_cita_param, descripcion_param);
+        (cliente_id_param, vehiculo_id_param, fecha_hora_param, motivo_param);
 END$$
 
-DELIMITER ;
-
 -- Procedimiento para obtener citas por cliente
-
-USE taller_mecanica;
-DELIMITER $$
-
 CREATE PROCEDURE obtener_citas_cliente (
     IN cliente_id INT
 )
 BEGIN
     SELECT 
         c.CitaID,
-        c.FechaCita,
-        c.Descripcion,
+        c.FechaHora,
+        c.Motivo,
         c.Estado,
-        v.Placa AS Vehiculo,
-        e.Nombre AS EmpleadoNombre,
-        e.Apellido AS EmpleadoApellido
+        v.Placa AS Vehiculo
     FROM 
         Cita c
         INNER JOIN Vehiculo v ON c.VehiculoID = v.VehiculoID
-        LEFT JOIN Empleado e ON c.EmpleadoID = e.EmpleadoID
     WHERE 
         c.ClienteID = cliente_id
-    ORDER BY c.FechaCita DESC;
+    ORDER BY c.FechaHora DESC;
 END$$
 
 DELIMITER ;
 
--- Procedimiento para actualizar estado de la cita 
-
-USE taller_mecanica;
-DELIMITER $$
-
+-- Procedimiento para actualizar el estado de una cita
 CREATE PROCEDURE actualizar_estado_cita (
     IN cita_id INT,
     IN estado VARCHAR(50)
@@ -146,13 +134,7 @@ BEGIN
         CitaID = cita_id;
 END$$
 
-DELIMITER ;
-
--- Procedimiento para eliminar cita 
-
-USE taller_mecanica;
-DELIMITER $$
-
+-- Procedimiento para eliminar una cita
 CREATE PROCEDURE eliminar_cita (
     IN cita_id INT
 )
@@ -162,6 +144,7 @@ BEGIN
 END$$
 
 DELIMITER ;
+
 
 --Procedimiento para crear nueva orden de trabajo
 
@@ -1078,7 +1061,7 @@ END$$
 
 DELIMITER ;
 
--- Procedimiento para obtener todos los empleados
+-- Procedimiento para obtener todos los empleados - sok
 USE taller_mecanica;
 DELIMITER $$
 
