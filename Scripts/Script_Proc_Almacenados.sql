@@ -128,7 +128,7 @@ END$$
 
 DELIMITER ;
 
--- Procedimiento para actualizarestado de la cita 
+-- Procedimiento para actualizar estado de la cita 
 
 USE taller_mecanica;
 DELIMITER $$
@@ -984,6 +984,116 @@ BEGIN
         Factura
     WHERE 
         FacturaID = factura_id_param;
+END$$
+
+DELIMITER ;
+
+-- Procedimiento para crear un empleado
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE crear_empleado (
+    IN nombre_param VARCHAR(100),
+    IN apellido_param VARCHAR(100),
+    IN cargo_param VARCHAR(50),
+    IN telefono_param VARCHAR(20),
+    IN email_param VARCHAR(100),
+    IN fecha_contratacion_param DATE
+)
+BEGIN
+    INSERT INTO 
+        Empleado (Nombre, Apellido, Cargo, Telefono, Email, FechaContratacion)
+    VALUES 
+        (nombre_param, apellido_param, cargo_param, telefono_param, email_param, fecha_contratacion_param);
+END$$
+
+DELIMITER ;
+
+-- Procedimiento para obtener un empleado por ID
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE obtener_empleado_por_id (
+    IN empleado_id_param INT
+)
+BEGIN
+    SELECT 
+        EmpleadoID, 
+        Nombre, 
+        Apellido, 
+        Cargo, 
+        Telefono, 
+        Email, 
+        FechaContratacion
+    FROM 
+        Empleado
+    WHERE 
+        EmpleadoID = empleado_id_param;
+END$$
+
+DELIMITER ;
+
+-- Procedimiento para modificar un empleado
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE modificar_empleado (
+    IN empleado_id_param INT,
+    IN nombre_param VARCHAR(100),
+    IN apellido_param VARCHAR(100),
+    IN cargo_param VARCHAR(50),
+    IN telefono_param VARCHAR(20),
+    IN email_param VARCHAR(100),
+    IN fecha_contratacion_param DATE
+)
+BEGIN
+    UPDATE 
+        Empleado
+    SET 
+        Nombre = nombre_param,
+        Apellido = apellido_param,
+        Cargo = cargo_param,
+        Telefono = telefono_param,
+        Email = email_param,
+        FechaContratacion = fecha_contratacion_param
+    WHERE 
+        EmpleadoID = empleado_id_param;
+END$$
+
+DELIMITER ;
+
+-- Procedimiento para eliminar un empleado
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE eliminar_empleado (
+    IN empleado_id_param INT
+)
+BEGIN
+    DELETE FROM 
+        Empleado
+    WHERE 
+        EmpleadoID = empleado_id_param;
+END$$
+
+DELIMITER ;
+
+-- Procedimiento para obtener todos los empleados
+USE taller_mecanica;
+DELIMITER $$
+
+CREATE PROCEDURE obtener_todos_empleados ()
+BEGIN
+    SELECT 
+        EmpleadoID, 
+        Nombre, 
+        Apellido, 
+        Cargo, 
+        Telefono, 
+        Email, 
+        FechaContratacion
+    FROM 
+        Empleado;
 END$$
 
 DELIMITER ;

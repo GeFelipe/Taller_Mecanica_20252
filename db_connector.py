@@ -145,16 +145,6 @@ def obtener_orden(orden_trabajo_id):
     print("\n--- INVOCACIÓN: OBTENER ORDEN ---")
     return execute_stored_procedure('obtener_orden_completa', orden_trabajo_id)
 
-
-# ----------------------------------------------------------------------
-# FUNCIONES DE CONVENIENCIA para los procedimientos de la tabla 'facturas'
-# ----------------------------------------------------------------------
-
-def generar_factura_desde_orden(orden_trabajo_id):
-    """Llamar al SP generar_factura_desde_orden"""
-    print("\n--- INVOCACIÓN: GENERAR FACTURA ---")
-    return execute_stored_procedure('generar_factura_desde_orden', orden_trabajo_id)
-
 # ----------------------------------------------------------------------
 # FUNCIONES DE CONVENIENCIA para los procedimientos de la tabla 'pagos'
 # ----------------------------------------------------------------------
@@ -292,7 +282,7 @@ def eliminar_proveedor(proveedor_id):
     return execute_stored_procedure('eliminar_proveedor', proveedor_id)
 
 # ----------------------------------------------------------------------
-# FUNCIONES DE CONVENIENCIA para los procedimientos de la tabla 'proveedor'
+# FUNCIONES DE CONVENIENCIA para los procedimientos de la tabla 'factura'
 # ----------------------------------------------------------------------
 
 def crear_factura(orden_trabajo_id, subtotal, iva, total):
@@ -315,11 +305,38 @@ def eliminar_factura(factura_id):
     print("\n--- INVOCACIÓN: DELETE FACTURA ---")
     return execute_stored_procedure('eliminar_factura', factura_id)
 
+def generar_factura_desde_orden(orden_trabajo_id):
+    """Llamar al SP generar_factura_desde_orden"""
+    print("\n--- INVOCACIÓN: GENERAR FACTURA ---")
+    return execute_stored_procedure('generar_factura_desde_orden', orden_trabajo_id)
 
-# PARCE FALTA CREAR LOS DEMÁS MÉTODOS PARA FACTURA (ELIMINAR, ACTUALIZAR, OBTENER FACTURAS, OBTENER INFO DE UNA FACTURA)  - ok, teateados
-# FALTAN TODOS LOS PRODECIMIENTOS PARA LA TABLA VEHICULO (CREAR, MODIFICAR, ELIMINAR, OBTENER) - ok, teateados
-# FALTAN TODOS LOS PRODECIMIENTOS PARA LA TABLA SERVICIO (CREAR, MODIFICAR, ELIMINAR, OBTENER) - ok, testeados
-# FALTAN TODOS LOS PRODECIMIENTOS PARA LA TABLA REPUESTO (CREAR, MODIFICAR, ELIMINAR, OBTENER) - ok, testeados
-# FALTAN TODOS LOS PRODECIMIENTOS PARA LA TABLA PROVEEDOR (CREAR, MODIFICAR, ELIMINAR, OBTENER) - ok, testedos
-# cliente - ok, teateados
-# NO PUDE PROBAR PORQUE ME SALE UN ERROR EN LA CLASE ESTA CLASE, EN LA IMPORTACIÓN DE LA CLASE DE pyodbc
+# ----------------------------------------------------------------------
+# FUNCIONES DE CONVENIENCIA para los procedimientos de la tabla 'empleado'
+# ----------------------------------------------------------------------
+
+def crear_empleado(nombre, apellido, cargo, telefono, email, fecha_contratacion):
+    """Llama al SP crear_empleado (Inserción)."""
+    print("\n--- INVOCACIÓN: INSERT EMPLEADO ---")
+    return execute_stored_procedure('crear_empleado', nombre, apellido, cargo, telefono, email, fecha_contratacion)
+
+def obtener_empleado_por_id(empleado_id):
+    """Llama al SP obtener_empleado_por_id (Consulta)."""
+    print("\n--- INVOCACIÓN: OBTENER EMPLEADO ---")
+    return execute_stored_procedure('obtener_empleado_por_id', empleado_id)
+
+def modificar_empleado(empleado_id, nombre, apellido, cargo, telefono, email, fecha_contratacion):
+    """Llama al SP modificar_empleado (Actualización)."""
+    print("\n--- INVOCACIÓN: UPDATE EMPLEADO ---")
+    return execute_stored_procedure('modificar_empleado', empleado_id, nombre, apellido, cargo, telefono, email, fecha_contratacion)
+
+def eliminar_empleado(empleado_id):
+    """Llama al SP eliminar_empleado (Borrado)."""
+    print("\n--- INVOCACIÓN: DELETE EMPLEADO ---")
+    return execute_stored_procedure('eliminar_empleado', empleado_id)
+
+def obtener_todos_empleados():
+    """Llama al SP obtener_todos_empleados (Consulta)."""
+    print("\n--- INVOCACIÓN: OBTENER TODOS LOS EMPLEADOS ---")
+    return execute_stored_procedure('obtener_todos_empleados')
+
+
