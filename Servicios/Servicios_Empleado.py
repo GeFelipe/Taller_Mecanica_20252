@@ -3,6 +3,11 @@
 import flask
 import json
 import pyodbc
+
+import sys
+import os
+# Agregar el directorio raíz del proyecto al path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from db_connector import (
     crear_empleado,
     obtener_empleado_por_id,
@@ -138,7 +143,8 @@ def borrar_empleado(empleado_id):
         respuesta["Respuesta"] = "Error"
         return flask.jsonify(respuesta), 500
 
+app.run(host="localhost", port=4040, debug=True)
 
-if __name__ == "__main__":
-    print("🚀 Servidor Flask ejecutándose en http://localhost:4040 ...")
-    app.run(host="localhost", port=4040, debug=True)
+# if __name__ == "__main__":
+#     print("🚀 Servidor Flask ejecutándose en http://localhost:4040 ...")
+#     app.run(host="localhost", port=4040, debug=True)
