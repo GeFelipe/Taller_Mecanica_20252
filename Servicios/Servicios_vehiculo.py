@@ -1,67 +1,98 @@
+from flask import Flask, request, jsonify
 import pyodbc
 import sys
 import os
-import flask
-import json
-from db_connector import (
-    crear_vehiculo,
-    modificar_vehiculo,
-    obtener_vehiculo_por_id,
-    eliminar_vehiculo
-)
 
-# Agregar el directorio raíz del proyecto al path
+# --- Ajustar path para acceder a config.py ---
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import CONNECTION_STRING
 
-app = flask.Flask(__name__)
+app = Flask(__name__)
 
-@app.route('/vehiculo/crear', methods=["POST"])
-def crear():
+# --- Crear conexión ---
+def get_connection():
+    return pyodbc.connect(CONNECTION_STRING)
+
+# --- Crear vehículo ---
+@app.route('/vehiculo', methods=['POST'])
+def crear_vehiculo():
+    data = request.json
     try:
-        data = flask.request.get_json()
-        cliente_id = data["cliente_id"]
-        placa = data["placa"]
-        marca = data["marca"]
-        modelo = data["modelo"]
-        anio = data["anio"]
-        vin = data["vin"]
-        color = data["color"]
-        respuesta = crear_vehiculo(cliente_id, placa, marca, modelo, anio, vin, color)
-        return flask.jsonify({"respuesta": "OK", "data": respuesta}), 200
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "CALL crear_vehiculo (?, ?, ?, ?, ?, ?, ?)",
+            (data['cliente_id'], data['placa'], data['marca'], data['modelo'], data['anio'], data['vin'], data['color'])
+        )
+        conn.commit()
+        return jsonify({'mensaje': 'Vehículo creado exitosamente'}), 201
     except Exception as e:
-        return flask.jsonify({"respuesta": "Error", "error": str(e)}), 400
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
-@app.route('/vehiculo/obtener/<int:vehiculo_id>', methods=["GET"])
-def obtener(vehiculo_id):
+# --- Obtener vehículo por ID ---
+@app.route('/vehiculo/<int:vehiculo_id>', methods=['GET'])
+def obtener_vehiculo(vehiculo_id):
     try:
-        respuesta = obtener_vehiculo_por_id(vehiculo_id)
-        return flask.jsonify({"respuesta": "OK", "data": respuesta}), 200
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("CALL obtener_vehiculo_por_id (?)", vehiculo_id)
+        row = cursor.fetchone()
+        if row:
+            vehiculo = {
+                'VehiculoID': row[0],
+                'ClienteID': row[1],
+                'Placa': row[2],
+                'Marca': row[3],
+                'Modelo': row[4],
+                'Anio': row[5],
+                'VIN': row[6],
+                'Color': row[7]
+            }
+            return jsonify(vehiculo)
+        else:
+            return jsonify({'mensaje': 'Vehículo no encontrado'}), 404
     except Exception as e:
-        return flask.jsonify({"respuesta": "Error", "error": str(e)}), 400
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
-@app.route('/vehiculo/modificar', methods=["PUT"])
-def modificar():
+# --- Modificar vehículo ---
+@app.route('/vehiculo/<int:vehiculo_id>', methods=['PUT'])
+def modificar_vehiculo(vehiculo_id):
+    data = request.json
     try:
-        data = flask.request.get_json()
-        vehiculo_id = data["vehiculo_id"]
-        cliente_id = data["cliente_id"]
-        placa = data["placa"]
-        marca = data["marca"]
-        modelo = data["modelo"]
-        anio = data["anio"]
-        vin = data["vin"]
-        color = data["color"]
-        respuesta = modificar_vehiculo(vehiculo_id, cliente_id, placa, marca, modelo, anio, vin, color)
-        return flask.jsonify({"respuesta": "OK", "data": respuesta}), 200
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "CALL modificar_vehiculo (?, ?, ?, ?, ?, ?, ?, ?)",
+            (vehiculo_id, data['cliente_id'], data['placa'], data['marca'], data['modelo'], data['anio'], data['vin'], data['color'])
+        )
+        conn.commit()
+        return jsonify({'mensaje': 'Vehículo modificado exitosamente'})
     except Exception as e:
-        return flask.jsonify({"respuesta": "Error", "error": str(e)}), 400
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
-@app.route('/vehiculo/eliminar/<int:vehiculo_id>', methods=["DELETE"])
-def eliminar(vehiculo_id):
+# --- Eliminar vehículo ---
+@app.route('/vehiculo/<int:vehiculo_id>', methods=['DELETE'])
+def eliminar_vehiculo(vehiculo_id):
     try:
-        respuesta = eliminar_vehiculo(vehiculo_id)
-        return flask.jsonify({"respuesta": "OK", "data": respuesta}), 200
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("CALL eliminar_vehiculo (?)", vehiculo_id)
+        conn.commit()
+        return jsonify({'mensaje': 'Vehículo eliminado exitosamente'})
     except Exception as e:
-        return flask.jsonify({"respuesta": "Error", "error": str(e)}), 400
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
-app.run(host="localhost", port=4040, debug=True)
+if __name__ == '__main__':
+    app.run(debug=True, port=4040)

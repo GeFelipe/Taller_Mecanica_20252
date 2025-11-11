@@ -1,150 +1,146 @@
 # Archivo: servicios_empleado.py
 
-import flask
-import json
+from flask import Flask, request, jsonify
 import pyodbc
-
 import sys
 import os
-# Agregar el directorio raíz del proyecto al path
+
+# --- Ajustar path para acceder a config.py ---
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from db_connector import (
-    crear_empleado,
-    obtener_empleado_por_id,
-    modificar_empleado,
-    eliminar_empleado,
-    obtener_todos_empleados
-)
+from config import CONNECTION_STRING
 
-app = flask.Flask(__name__)
+app = Flask(__name__)
 
-@app.route('/empleados', methods=["GET"])
-def listar_empleados():
-    """
-    Obtiene todos los empleados.
-    Endpoint: GET /empleados
-    """
-    respuesta = {}
+# --- Crear conexión ---
+def get_connection():
+    return pyodbc.connect(CONNECTION_STRING)
+
+# ===============================
+#       ENDPOINTS EMPLEADO
+# ===============================
+
+# --- Crear empleado ---
+@app.route('/empleado', methods=['POST'])
+def crear_empleado():
+    data = request.json
     try:
-        columnas, filas = obtener_todos_empleados()
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "CALL crear_empleado (?, ?, ?, ?, ?, ?)",
+            (
+                data['nombre'],
+                data['apellido'],
+                data.get('cargo'),
+                data.get('telefono'),
+                data.get('email'),
+                data.get('fecha_contratacion')
+            )
+        )
+        conn.commit()
+        return jsonify({'mensaje': 'Empleado creado exitosamente'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+# --- Obtener todos los empleados ---
+@app.route('/empleados', methods=['GET'])
+def obtener_empleados():
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("CALL obtener_todos_empleados()")
         empleados = []
-        if filas:
-            for fila in filas:
-                empleados.append(dict(zip(columnas, fila)))
-        respuesta["Empleados"] = empleados
-        respuesta["Respuesta"] = "OK"
-        return flask.jsonify(respuesta)
-    except Exception as ex:
-        respuesta["Error"] = str(ex)
-        respuesta["Respuesta"] = "Error"
-        return flask.jsonify(respuesta), 500
+        for row in cursor.fetchall():
+            empleados.append({
+                'EmpleadoID': row[0],
+                'Nombre': row[1],
+                'Apellido': row[2],
+                'Cargo': row[3],
+                'Telefono': row[4],
+                'Email': row[5],
+                'FechaContratacion': str(row[6]) if row[6] else None
+            })
+        return jsonify(empleados)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
-
-@app.route('/empleados/<int:empleado_id>', methods=["GET"])
+# --- Obtener empleado por ID ---
+@app.route('/empleado/<int:empleado_id>', methods=['GET'])
 def obtener_empleado(empleado_id):
-    """
-    Obtiene un empleado por ID.
-    Endpoint: GET /empleados/<id>
-    """
-    respuesta = {}
     try:
-        columnas, filas = obtener_empleado_por_id(empleado_id)
-        if filas:
-            empleado = dict(zip(columnas, filas[0]))
-            respuesta["Empleado"] = empleado
-            respuesta["Respuesta"] = "OK"
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("CALL obtener_empleado_por_id (?)", empleado_id)
+        row = cursor.fetchone()
+        if row:
+            empleado = {
+                'EmpleadoID': row[0],
+                'Nombre': row[1],
+                'Apellido': row[2],
+                'Cargo': row[3],
+                'Telefono': row[4],
+                'Email': row[5],
+                'FechaContratacion': str(row[6]) if row[6] else None
+            }
+            return jsonify(empleado)
         else:
-            respuesta["Mensaje"] = "Empleado no encontrado"
-            respuesta["Respuesta"] = "NoData"
-        return flask.jsonify(respuesta)
-    except Exception as ex:
-        respuesta["Error"] = str(ex)
-        respuesta["Respuesta"] = "Error"
-        return flask.jsonify(respuesta), 500
+            return jsonify({'mensaje': 'Empleado no encontrado'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
-
-@app.route('/empleados', methods=["POST"])
-def crear_nuevo_empleado():
-    """
-    Crea un nuevo empleado.
-    Endpoint: POST /empleados
-    Body JSON:
-    {
-        "Nombre": "...",
-        "Apellido": "...",
-        "Cargo": "...",
-        "Telefono": "...",
-        "Email": "...",
-        "FechaContratacion": "YYYY-MM-DD"
-    }
-    """
-    respuesta = {}
+# --- Modificar empleado ---
+@app.route('/empleado/<int:empleado_id>', methods=['PUT'])
+def modificar_empleado(empleado_id):
+    data = request.json
     try:
-        data = flask.request.get_json()
-        crear_empleado(
-            data["Nombre"],
-            data["Apellido"],
-            data.get("Cargo", None),
-            data.get("Telefono", None),
-            data.get("Email", None),
-            data.get("FechaContratacion", None)
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "CALL modificar_empleado (?, ?, ?, ?, ?, ?, ?)",
+            (
+                empleado_id,
+                data['nombre'],
+                data['apellido'],
+                data.get('cargo'),
+                data.get('telefono'),
+                data.get('email'),
+                data.get('fecha_contratacion')
+            )
         )
-        respuesta["Mensaje"] = "Empleado creado correctamente"
-        respuesta["Respuesta"] = "OK"
-        return flask.jsonify(respuesta), 201
-    except Exception as ex:
-        respuesta["Error"] = str(ex)
-        respuesta["Respuesta"] = "Error"
-        return flask.jsonify(respuesta), 500
+        conn.commit()
+        return jsonify({'mensaje': 'Empleado modificado exitosamente'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
-
-@app.route('/empleados/<int:empleado_id>', methods=["PUT"])
-def actualizar_empleado(empleado_id):
-    """
-    Actualiza un empleado existente.
-    Endpoint: PUT /empleados/<id>
-    Body JSON igual que el POST.
-    """
-    respuesta = {}
+# --- Eliminar empleado ---
+@app.route('/empleado/<int:empleado_id>', methods=['DELETE'])
+def eliminar_empleado(empleado_id):
     try:
-        data = flask.request.get_json()
-        modificar_empleado(
-            empleado_id,
-            data["Nombre"],
-            data["Apellido"],
-            data.get("Cargo", None),
-            data.get("Telefono", None),
-            data.get("Email", None),
-            data.get("FechaContratacion", None)
-        )
-        respuesta["Mensaje"] = "Empleado actualizado correctamente"
-        respuesta["Respuesta"] = "OK"
-        return flask.jsonify(respuesta)
-    except Exception as ex:
-        respuesta["Error"] = str(ex)
-        respuesta["Respuesta"] = "Error"
-        return flask.jsonify(respuesta), 500
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("CALL eliminar_empleado (?)", empleado_id)
+        conn.commit()
+        return jsonify({'mensaje': 'Empleado eliminado exitosamente'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
-
-@app.route('/empleados/<int:empleado_id>', methods=["DELETE"])
-def borrar_empleado(empleado_id):
-    """
-    Elimina un empleado.
-    Endpoint: DELETE /empleados/<id>
-    """
-    respuesta = {}
-    try:
-        eliminar_empleado(empleado_id)
-        respuesta["Mensaje"] = "Empleado eliminado correctamente"
-        respuesta["Respuesta"] = "OK"
-        return flask.jsonify(respuesta)
-    except Exception as ex:
-        respuesta["Error"] = str(ex)
-        respuesta["Respuesta"] = "Error"
-        return flask.jsonify(respuesta), 500
-
-app.run(host="localhost", port=4040, debug=True)
-
-# if __name__ == "__main__":
-#     print("🚀 Servidor Flask ejecutándose en http://localhost:4040 ...")
-#     app.run(host="localhost", port=4040, debug=True)
+# ===============================
+#       EJECUCIÓN LOCAL
+# ===============================
+if __name__ == '__main__':
+    app.run(debug=True, port=4040)
