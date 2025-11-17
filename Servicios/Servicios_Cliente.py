@@ -1,60 +1,168 @@
+# Archivo: servicios_cliente.py
+
+from flask import Flask, request, jsonify
 import pyodbc
 import sys
 import os
-import flask
-import json
-from db_connector import (
-    select_cliente,
-    insert_cliente,
-    update_contacto,
-    eliminar_cliente
-)
 
-# Agregar el directorio raíz del proyecto al path
+# --- Ajustar path para acceder a config.py ---
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import CONNECTION_STRING
 
-app = flask.Flask(__name__)
+app = Flask(__name__)
 
-@app.route('/cliente/crear', methods=["POST"])
-def crear():
+# --- Crear conexión ---
+def get_connection():
+    return pyodbc.connect(CONNECTION_STRING)
+
+# ===============================
+#          ENDPOINTS CLIENTE
+# ===============================
+
+# --- Crear cliente ---
+@app.route('/cliente', methods=['POST'])
+def crear_cliente():
+    data = request.json
     try:
-        data = flask.request.get_json()
-        nombre = data["nombre"]
-        apellido = data["apellido"]
-        telefono = data["telefono"]
-        email = data["email"]
-        direccion = data["direccion"]
-        respuesta = insert_cliente(nombre, apellido, telefono, email, direccion)
-        return flask.jsonify({"respuesta": "OK", "data": respuesta}), 200
-    except Exception as e:
-        return flask.jsonify({"respuesta": "Error", "error": str(e)}), 400
+        conn = get_connection()
+        cursor = conn.cursor()
 
-@app.route('/cliente/obtener/<int:cliente_id>', methods=["GET"])
-def obtener(cliente_id):
+        cursor.execute(
+            "CALL agregar_nuevo_cliente (?, ?, ?, ?, ?)",
+            (
+                data['nombre'],
+                data['apellido'],
+                data['telefono'],
+                data['email'],
+                data['direccion']
+            )
+        )
+
+        conn.commit()
+        return jsonify({'mensaje': 'Cliente creado exitosamente'}), 201
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+    finally:
+        cursor.close()
+        conn.close()
+
+
+# --- Obtener todos los clientes ---
+@app.route('/clientes', methods=['GET'])
+def obtener_clientes():
     try:
-        respuesta = select_cliente(cliente_id)
-        return flask.jsonify({"respuesta": "OK", "data": respuesta}), 200
-    except Exception as e:
-        return flask.jsonify({"respuesta": "Error", "error": str(e)}), 400
+        conn = get_connection()
+        cursor = conn.cursor()
 
-@app.route('/cliente/modificar', methods=["PUT"])
-def modificar():
+        cursor.execute("CALL obtener_todos_clientes()")
+
+        clientes = []
+        for row in cursor.fetchall():
+            clientes.append({
+                'ClienteID': row[0],
+                'Nombre': row[1],
+                'Apellido': row[2],
+                'Telefono': row[3],
+                'Email': row[4],
+                'Direccion': row[5],
+                'FechaRegistro': str(row[6]) if row[6] else None
+            })
+
+        return jsonify(clientes)
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+    finally:
+        cursor.close()
+        conn.close()
+
+
+# --- Obtener cliente por ID ---
+@app.route('/cliente/<int:cliente_id>', methods=['GET'])
+def obtener_cliente(cliente_id):
     try:
-        data = flask.request.get_json()
-        cliente_id = data["cliente_id"]
-        telefono = data["telefono"]
-        direccion = data["direccion"]
-        respuesta = update_contacto(cliente_id, telefono, direccion)
-        return flask.jsonify({"respuesta": "OK", "data": respuesta}), 200
-    except Exception as e:
-        return flask.jsonify({"respuesta": "Error", "error": str(e)}), 400
+        conn = get_connection()
+        cursor = conn.cursor()
 
-@app.route('/cliente/eliminar/<int:cliente_id>', methods=["DELETE"])
-def eliminar(cliente_id):
+        cursor.execute("CALL obtener_datos_cliente (?)", cliente_id)
+        row = cursor.fetchone()
+
+        if row:
+            cliente = {
+                'ClienteID': row[0],
+                'Nombre': row[1],
+                'Apellido': row[2],
+                'Telefono': row[3],
+                'Email': row[4],
+                'Direccion': row[5],
+                'FechaRegistro': str(row[6]) if row[6] else None
+            }
+            return jsonify(cliente)
+        else:
+            return jsonify({'mensaje': 'Cliente no encontrado'}), 404
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+    finally:
+        cursor.close()
+        conn.close()
+
+
+# --- Modificar cliente ---
+@app.route('/cliente/<int:cliente_id>', methods=['PUT'])
+def modificar_cliente(cliente_id):
+    data = request.json
     try:
-        respuesta = eliminar_cliente(cliente_id)
-        return flask.jsonify({"respuesta": "OK", "data": respuesta}), 200
-    except Exception as e:
-        return flask.jsonify({"respuesta": "Error", "error": str(e)}), 400
+        conn = get_connection()
+        cursor = conn.cursor()
 
-app.run(host="localhost", port=4040, debug=True)
+        cursor.execute(
+            "CALL actualizar_contacto_cliente (?, ?, ?)",
+            (
+                cliente_id,
+                data['telefono'],
+                data['direccion']
+            )
+        )
+
+        conn.commit()
+        return jsonify({'mensaje': 'Cliente modificado exitosamente'})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+    finally:
+        cursor.close()
+        conn.close()
+
+
+# --- Eliminar cliente ---
+@app.route('/cliente/<int:cliente_id>', methods=['DELETE'])
+def eliminar_cliente(cliente_id):
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("CALL eliminar_cliente (?)", cliente_id)
+        conn.commit()
+
+        return jsonify({'mensaje': 'Cliente eliminado exitosamente'})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+    finally:
+        cursor.close()
+        conn.close()
+
+
+# ===============================
+#       EJECUCIÓN LOCAL
+# ===============================
+if __name__ == '__main__':
+    app.run(debug=True, port=4040)
+
