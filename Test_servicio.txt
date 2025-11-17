@@ -1,0 +1,281 @@
+
+=========================
+API Taller Mecánica - Endpoints
+Puerto base: 4040
+=========================
+
+SERVICIO FACTURA
+-------------------------
+[POST]   http://localhost:4040/factura/crear
+Body (JSON):
+{
+  "orden_trabajo_id": 1,
+  "subtotal": 100000,
+  "iva": 19000,
+  "total": 119000
+}
+
+[GET]    http://localhost:4040/factura/obtener/1
+
+[PUT]    http://localhost:4040/factura/modificar/1
+Body (JSON):
+{
+  "subtotal": 95000,
+  "iva": 18050,
+  "total": 113050
+}
+
+[DELETE] http://localhost:4040/factura/eliminar/1
+
+
+SERVICIO REPUESTO
+-------------------------
+[POST]   http://localhost:4040/repuesto/crear
+Body (JSON):
+{
+  "proveedor_id": 1,
+  "nombre": "Filtro de aire",
+  "descripcion": "Filtro de aire para motor 1.6",
+  "precio_unitario": 35000,
+  "stock_actual": 10
+}
+
+[GET]    http://localhost:4040/repuesto/obtener/1
+
+[PUT]    http://localhost:4040/repuesto/modificar/1
+Body (JSON):
+{
+  "proveedor_id": 1,
+  "nombre": "Filtro de aire premium",
+  "descripcion": "Filtro de aire reforzado",
+  "precio_unitario": 40000,
+  "stock_actual": 15
+}
+
+[DELETE] http://localhost:4040/repuesto/eliminar/1
+
+
+SERVICIO SERVICIO (CATÁLOGO DE SERVICIOS)
+-------------------------
+[POST]   http://localhost:4040/servicio/crear
+Body (JSON):
+{
+  "nombre": "Cambio de aceite",
+  "descripcion": "Cambio de aceite sintético y revisión básica",
+  "precio_base": 80000
+}
+
+[GET]    http://localhost:4040/servicio/obtener/1
+
+[PUT]    http://localhost:4040/servicio/modificar/1
+Body (JSON):
+{
+  "nombre": "Cambio de aceite + filtro",
+  "descripcion": "Cambio de aceite premium con filtro nuevo",
+  "precio_base": 95000
+}
+
+[DELETE] http://localhost:4040/servicio/eliminar/1
+
+
+SERVICIO CITA
+-------------------------
+[POST]   http://localhost:4040/cita/crear
+Body (JSON):
+{
+  "cliente_id": 1,
+  "vehiculo_id": 2,
+  "fecha_cita": "2025-11-10 10:30:00",
+  "descripcion": "Mantenimiento preventivo"
+}
+
+[GET]    http://localhost:4040/cita/obtener/1
+
+[PUT]    http://localhost:4040/cita/actualizar/1
+Body (JSON):
+{
+  "estado": "Atendida"
+}
+
+[DELETE] http://localhost:4040/cita/eliminar/1
+
+
+SERVICIO PAGO
+-------------------------
+[POST]   http://localhost:4040/pago/crear
+Body (JSON):
+{
+  "factura_id": 1,
+  "monto": 119000,
+  "metodo": "Tarjeta"
+}
+
+[GET]    http://localhost:4040/pago/obtener/1
+
+[PUT]    http://localhost:4040/pago/actualizar/1
+Body (JSON):
+{
+  "nuevo_monto": 120000,
+  "nuevo_metodo": "Transferencia"
+}
+
+[DELETE] http://localhost:4040/pago/eliminar/1
+
+SERVICIO VEHICULO
+-------------------------
+[POST]   http://localhost:4040/vehiculo
+Body (JSON):
+{
+  "cliente_id": 1,
+  "placa": "ABC123",
+  "marca": "Toyota",
+  "modelo": "Corolla",
+  "anio": 2020,
+  "vin": "1HGCM82633A123456",
+  "color": "Rojo"
+}
+
+[GET]    http://localhost:4040/vehiculo/13
+
+[PUT]    http://localhost:4040/vehiculo/13
+Body (JSON):
+{
+  "cliente_id": 1,
+  "placa": "XYZ789",
+  "marca": "Mazda",
+  "modelo": "3",
+  "anio": 2021,
+  "vin": "1HGCM82633A654321",
+  "color": "Negro"
+}
+
+[DELETE] http://localhost:4040/vehiculo/13
+
+-------------------------------------------
+CREAR PROVEEDOR
+-------------------------------------------
+Método: POST
+URL: http://localhost:4040/proveedor
+Body (JSON):
+{
+    "nombre": "Autopartes Medellín",
+    "telefono": "6043214567",
+    "email": "contacto@autopartesmedellin.com",
+    "direccion": "Cra 45 #50-23, Medellín"
+}
+
+-------------------------------------------
+OBTENER PROVEEDOR POR ID
+-------------------------------------------
+Método: GET
+URL: http://localhost:4040/proveedor/1
+
+-------------------------------------------
+MODIFICAR PROVEEDOR
+-------------------------------------------
+Método: PUT
+URL: http://localhost:4040/proveedor/1
+Body (JSON):
+{
+    "nombre": "Autopartes Medellín S.A.S.",
+    "telefono": "6049998877",
+    "email": "ventas@autopartesmedellin.com",
+    "direccion": "Av. Las Palmas #12-34, Medellín"
+}
+
+-------------------------------------------
+ELIMINAR PROVEEDOR
+-------------------------------------------
+Método: DELETE
+URL: http://localhost:4040/proveedor/1
+
+
+
+=== SERVICIO DE EMPLEADOS ===
+Base URL: http://localhost:4040
+
+--------------------------------------------
+GET  /empleados
+Descripción: Obtiene todos los empleados.
+Ejemplo: http://localhost:4040/empleados
+
+--------------------------------------------
+GET  /empleado/<id>
+Descripción: Obtiene un empleado por ID.
+Ejemplo: http://localhost:4040/empleado/1
+
+--------------------------------------------
+POST /empleado
+Descripción: Crea un nuevo empleado.
+Body JSON:
+{
+    "nombre": "Carlos",
+    "apellido": "Rojas",
+    "cargo": "Mecánico",
+    "telefono": "3104567890",
+    "email": "carlos.rojas@empresa.com",
+    "fecha_contratacion": "2024-10-10"
+}
+
+--------------------------------------------
+PUT /empleado/<id>
+Descripción: Modifica un empleado existente.
+Ejemplo: http://localhost:4040/empleado/1
+Body JSON:
+{
+    "nombre": "Carlos",
+    "apellido": "Rojas",
+    "cargo": "Supervisor",
+    "telefono": "3104567890",
+    "email": "carlos.rojas@empresa.com",
+    "fecha_contratacion": "2024-10-10"
+}
+
+--------------------------------------------
+DELETE /empleado/<id>
+Descripción: Elimina un empleado por su ID.
+Ejemplo: http://localhost:4040/empleado/1
+
+
+===============================
+ SERVICIO: CLIENTE --PROBAR
+===============================
+
+--------------------------------
+1) CREAR CLIENTE (POST)
+URL:
+http://localhost:4040/cliente
+
+BODY (JSON):
+{
+    "nombre": "Felipe",
+    "apellido": "Sanabria",
+    "telefono": "3105551234",
+    "email": "f.sg@example.com",
+    "direccion": "Calle 45 #12-89"
+}
+
+
+--------------------------------
+2) OBTENER CLIENTE (GET)
+URL:
+http://localhost:4040/cliente/4
+
+
+--------------------------------
+3) MODIFICAR CLIENTE (PUT)
+URL:
+http://localhost:4040/cliente/4
+
+BODY (JSON):
+{
+  "ClienteID": 4,
+  "telefono": "123456789",
+  "direccion": "Calle 5555555"
+}
+
+
+--------------------------------
+4) ELIMINAR CLIENTE (DELETE)
+URL:
+http://localhost:4040/cliente/5
