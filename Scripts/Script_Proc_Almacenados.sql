@@ -216,7 +216,7 @@ BEGIN
     WHERE RepuestoID = repuesto_id;
 
     -- Insertamos el detalle del repuesto dentro de la orden de trabajo
-    INSERT INTO ordentrabajarepuesto (OrdenTrabajoID, RepuestoID, Cantidad, PrecioUnitario)
+    INSERT INTO ordentrabajorepuesto (OrdenTrabajoID, RepuestoID, Cantidad, PrecioUnitario)
     VALUES (orden_trabajo_id, repuesto_id, cantidad, precio_unitario);
 
     -- Actualizamos el inventarion - reduciendo el stiock por el repuesto que sacamos
@@ -317,7 +317,7 @@ BEGIN
         r.Nombre AS Repuesto,
         orp.Cantidad,
         orp.PrecioUnitario
-    FROM ordentrabajarepuesto orp
+    FROM ordentrabajorepuesto orp
     JOIN repuesto r ON orp.RepuestoID = r.RepuestoID
     WHERE orp.OrdenTrabajoID = orden_trabajo_id;
 
@@ -349,7 +349,7 @@ BEGIN
     -- Calculamo el subtotal sumando mano de obra - repuestos - servicios)
     SELECT 
         IFNULL(SUM(CostoManoDeObra),0)
-        + IFNULL((SELECT SUM(Cantidad * PrecioUnitario) FROM ordentrabajarepuesto WHERE OrdenTrabajoID = orden_trabajo_id),0)
+        + IFNULL((SELECT SUM(Cantidad * PrecioUnitario) FROM ordentrabajorepuesto WHERE OrdenTrabajoID = orden_trabajo_id),0)
         + IFNULL((SELECT SUM(Cantidad * PrecioUnitario) FROM ordentrabajoservicio WHERE OrdenTrabajoID = orden_trabajo_id),0)
     INTO subtotal
     FROM detalletrabajo

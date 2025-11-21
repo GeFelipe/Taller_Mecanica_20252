@@ -302,3 +302,45 @@ OBTENER TODOS LOS HISTORIALES
 URL:
 GET http://localhost:4040/historiales
 
+
+
+===============================
+ SERVICIO: ORDEN DE TRABAJO
+ Puerto: 4040
+===============================
+
+
+=========================================
+CREAR ORDEN DE TRABAJO
+=========================================
+
+POST http://localhost:4040/orden
+Content-Type: application/json
+
+{
+    "cita_id": 1,
+    "empleado_id": 3,
+    "observaciones": "Revisión general y diagnóstico inicial"
+}
+
+
+
+=========================================
+OBTENER ORDEN COMPLETA POR ID
+=========================================
+
+GET http://localhost:4040/orden/3
+
+
+
+=========================================
+FINALIZAR ORDEN DE TRABAJO
+=========================================
+
+PUT http://localhost:4040/orden/3/finalizar
+Content-Type: application/json
+
+{
+    "observaciones": "Orden finalizada correctamente. Se realizaron ajustes y pruebas."
+}
+
