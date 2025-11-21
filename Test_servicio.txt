@@ -279,3 +279,26 @@ BODY (JSON):
 4) ELIMINAR CLIENTE (DELETE)
 URL:
 http://localhost:4040/cliente/5
+
+
+
+===========================================
+  SERVICIO HISTORIAL DE VEHÍCULOS
+  Puerto: 4040
+===========================================
+
+-------------------------------------------
+OBTENER HISTORIAL COMPLETO DE UN VEHÍCULO
+-------------------------------------------
+
+URL:
+GET http://localhost:4040/historial/13
+
+
+-------------------------------------------
+OBTENER TODOS LOS HISTORIALES
+-------------------------------------------
+
+URL:
+GET http://localhost:4040/historiales
+
