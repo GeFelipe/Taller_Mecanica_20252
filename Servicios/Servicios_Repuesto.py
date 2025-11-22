@@ -13,6 +13,7 @@ app = Flask(__name__)
 def get_connection():
     return pyodbc.connect(CONNECTION_STRING)
 
+
 # --- Crear repuesto ---
 @app.route('/repuesto', methods=['POST'])
 def crear_repuesto():

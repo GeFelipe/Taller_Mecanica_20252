@@ -1080,3 +1080,87 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+
+--Procedimiento para obtener mano de obra por orden
+DELIMITER $$
+CREATE PROCEDURE obtener_mano_obra_por_orden(IN p_orden_id INT)
+BEGIN
+    SELECT 
+        DetalleTrabajoID,
+        Descripcion,
+        ManoDeObraHoras,
+        CostoManoDeObra
+    FROM DetalleTrabajo
+    WHERE OrdenTrabajoID = p_orden_id;
+END$$
+DELIMITER ;
+
+--Procedimiento para obtener respuestos por orden
+DELIMITER $$
+CREATE PROCEDURE obtener_repuestos_por_orden(IN p_orden_id INT)
+BEGIN
+    SELECT 
+        otr.OrdenTrabajoRepuestoID,
+        r.RepuestoID,
+        r.Nombre,
+        otr.Cantidad,
+        otr.PrecioUnitario
+    FROM OrdenTrabajoRepuesto otr
+    INNER JOIN Repuesto r ON r.RepuestoID = otr.RepuestoID
+    WHERE otr.OrdenTrabajoID = p_orden_id;
+END$$
+DELIMITER ;
+
+--Procedimiento para obtener servicios por orden
+DELIMITER $$
+CREATE PROCEDURE obtener_servicios_por_orden(IN p_orden_id INT)
+BEGIN
+    SELECT 
+        ots.OrdenTrabajoServicioID,
+        s.ServicioID,
+        s.Nombre,
+        ots.Cantidad,
+        ots.PrecioUnitario
+    FROM OrdenTrabajoServicio ots
+    INNER JOIN Servicio s ON s.ServicioID = ots.ServicioID
+    WHERE ots.OrdenTrabajoID = p_orden_id;
+END$$
+DELIMITER ;
+
+--Procedimiento para actualizar mano de obra
+DELIMITER $$
+CREATE PROCEDURE actualizar_detalle_trabajo(
+    IN p_detalle_id INT,
+    IN p_descripcion VARCHAR(200),
+    IN p_horas DECIMAL(5,2),
+    IN p_costo DECIMAL(10,2)
+)
+BEGIN
+    UPDATE DetalleTrabajo
+    SET 
+        Descripcion = p_descripcion,
+        ManoDeObraHoras = p_horas,
+        CostoManoDeObra = p_costo
+    WHERE DetalleTrabajoID = p_detalle_id;
+END$$
+DELIMITER ;
+
+
+--Procedimiento para eliminar cualquier detalle de la orden de trabajo (mano de obra/repuesto/servicio)
+DELIMITER $$
+CREATE PROCEDURE eliminar_detalle_orden(IN p_detalle_id INT)
+BEGIN
+    -- Eliminar mano de obra si existe
+    DELETE FROM DetalleTrabajo
+    WHERE DetalleTrabajoID = p_detalle_id;
+
+    -- Eliminar repuesto si existe
+    DELETE FROM OrdenTrabajoRepuesto
+    WHERE OrdenTrabajoRepuestoID = p_detalle_id;
+
+    -- Eliminar servicio si existe
+    DELETE FROM OrdenTrabajoServicio
+    WHERE OrdenTrabajoServicioID = p_detalle_id;
+END$$
+DELIMITER ;

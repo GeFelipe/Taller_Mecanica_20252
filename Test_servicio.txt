@@ -27,25 +27,25 @@ Body (JSON):
 
 [DELETE] http://localhost:4040/factura/eliminar/1
 
-
+****************************************************************************************************************************************
 SERVICIO REPUESTO
 -------------------------
-[POST]   http://localhost:4040/repuesto/crear
+[POST]   http://localhost:4040/repuesto
 Body (JSON):
 {
-  "proveedor_id": 1,
+  "proveedor_id": 3,
   "nombre": "Filtro de aire",
   "descripcion": "Filtro de aire para motor 1.6",
   "precio_unitario": 35000,
   "stock_actual": 10
 }
 
-[GET]    http://localhost:4040/repuesto/obtener/1
+[GET]    http://localhost:4040/repuesto/4
 
-[PUT]    http://localhost:4040/repuesto/modificar/1
+[PUT]    http://localhost:4040/repuesto/3
 Body (JSON):
 {
-  "proveedor_id": 1,
+  "proveedor_id": 3,
   "nombre": "Filtro de aire premium",
   "descripcion": "Filtro de aire reforzado",
   "precio_unitario": 40000,
@@ -54,7 +54,7 @@ Body (JSON):
 
 [DELETE] http://localhost:4040/repuesto/eliminar/1
 
-
+************************************************************************************************************************************
 SERVICIO SERVICIO (CATÁLOGO DE SERVICIOS)
 -------------------------
 [POST]   http://localhost:4040/servicio/crear
@@ -344,3 +344,86 @@ Content-Type: application/json
     "observaciones": "Orden finalizada correctamente. Se realizaron ajustes y pruebas."
 }
 
+
+******************************************************************************************************************
+===========================================
+  SERVICIO DETALLE ORDEN
+  Puerto: 4040
+===========================================
+
+=========================================
+INSERTAR MANO DE OBRA A ORDEN DE TRABAJO
+=========================================
+
+URL: http://localhost:4040/orden/1/mano_obra
+
+{
+    "descripcion": "Ajuste y calibración del sistema de frenos",
+    "horas": 2.5,
+    "costo": 150000
+}
+
+=========================================
+INSERTAR REPUESTO A ORDEN DE TRABAJO
+=========================================
+
+URL: http://localhost:4040/orden/1/repuesto
+
+{
+    "repuesto_id": 4,
+    "cantidad": 2
+}
+
+
+
+=========================================
+INSERTAR SERVICIO A ORDEN DE TRABAJO
+=========================================
+
+URL: http://localhost:4040/orden/1/servicio
+
+{
+    "servicio_id": 2,
+    "cantidad": 1
+}
+
+=========================================
+LISTAR MANO DE OBRA
+=========================================
+GET
+
+http://localhost:4040/orden/1/mano_obra
+
+=========================================
+LISTAR REPUESTOS
+=========================================
+GET
+
+http://localhost:4040/orden/1/repuesto
+
+=========================================
+LISTAR SERVICIOS
+=========================================
+GET
+
+http://localhost:4040/orden/1/servicio
+
+=========================================
+ACTUALIZAR MANO DE OBRA
+=========================================
+PUT
+
+http://localhost:4040/orden/detalle/mano_obra/1
+
+{
+    "descripcion": "Cambio de banda y ajuste",
+    "horas": 2,
+    "costo": 60000
+}
+
+=========================================
+ELIMINAR CUALQUIER DETALLE 
+=========================================
+DELETE
+
+http://localhost:4040/orden/detalle/5
