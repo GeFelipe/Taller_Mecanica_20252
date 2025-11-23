@@ -77,7 +77,7 @@ Body (JSON):
 
 [DELETE] http://localhost:4040/servicio/eliminar/1
 
-
+*********************************************************************************************************************************
 SERVICIO CITA
 -------------------------
 [POST]   http://localhost:4040/cita/crear
@@ -99,7 +99,7 @@ Body (JSON):
 
 [DELETE] http://localhost:4040/cita/eliminar/1
 
-
+*********************************************************************************************************************************
 SERVICIO PAGO
 -------------------------
 [POST]   http://localhost:4040/pago/crear
@@ -120,6 +120,8 @@ Body (JSON):
 }
 
 [DELETE] http://localhost:4040/pago/eliminar/1
+
+*********************************************************************************************************************************
 
 SERVICIO VEHICULO
 -------------------------
@@ -150,6 +152,8 @@ Body (JSON):
 }
 
 [DELETE] http://localhost:4040/vehiculo/13
+
+*********************************************************************************************************************************
 
 -------------------------------------------
 CREAR PROVEEDOR
@@ -189,7 +193,7 @@ ELIMINAR PROVEEDOR
 Método: DELETE
 URL: http://localhost:4040/proveedor/1
 
-
+*********************************************************************************************************************************
 
 === SERVICIO DE EMPLEADOS ===
 Base URL: http://localhost:4040
@@ -236,7 +240,7 @@ DELETE /empleado/<id>
 Descripción: Elimina un empleado por su ID.
 Ejemplo: http://localhost:4040/empleado/1
 
-
+*********************************************************************************************************************************
 ===============================
  SERVICIO: CLIENTE --PROBAR
 ===============================
@@ -427,3 +431,27 @@ ELIMINAR CUALQUIER DETALLE
 DELETE
 
 http://localhost:4040/orden/detalle/5
+
+
+
+***************************************************************************************************************************************
+=========================================
+TOKENIZACIÓN
+=========================================
+
+Levantar el servicio: python servicios_generador_token.py
+
+Para generar el token, por medio del metodo POST: http://localhost:4040/token/generar
+Utilizando el Json
+{
+  "usuario_id": 1,
+  "rol": "admin",
+  "cliente_id": 10,
+  "id_sucursal": 3
+}
+
+Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvX2lkIjoiVGdaTG9nMk1wa1czbi9FZ0FjQnY5Tlc4NythRkVXWlZ1M1FFaUJaY0pkbz0iLCJyb2wiOiJWRDlwYy9nMEMzaXNpMnF5VUsvK1c0S0tKZWRlYys4VUwwbTZVZDVScldNPSIsImV4cCI6MTc2Mzg2MTM4NX0.X6WaFsfpQxco9qgwniYSyKt3GL7zYcldIO-qWsFLNp8
+
+Para probar la tokenización se debe de agregar al Thunder Client dos parametros (Headers)
+Authorization: Bearer <token-generado>
+Content-Type: application/json

@@ -1,12 +1,16 @@
 # Archivo: servicios_cliente.py
-
-from flask import Flask, request, jsonify
-import pyodbc
 import sys
 import os
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from Seguridad.auth import token_required
+from flask import Flask, request, jsonify
+import pyodbc
+
+
 # --- Ajustar path para acceder a config.py ---
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from config import CONNECTION_STRING
 
 app = Flask(__name__)
@@ -21,6 +25,7 @@ def get_connection():
 
 # --- Crear cliente ---
 @app.route('/cliente', methods=['POST'])
+@token_required
 def crear_cliente():
     data = request.json
     try:
@@ -51,6 +56,7 @@ def crear_cliente():
 
 # --- Obtener todos los clientes ---
 @app.route('/clientes', methods=['GET'])
+@token_required
 def obtener_clientes():
     try:
         conn = get_connection()
@@ -82,6 +88,7 @@ def obtener_clientes():
 
 # --- Obtener cliente por ID ---
 @app.route('/cliente/<int:cliente_id>', methods=['GET'])
+@token_required
 def obtener_cliente(cliente_id):
     try:
         conn = get_connection()
@@ -114,6 +121,7 @@ def obtener_cliente(cliente_id):
 
 # --- Modificar cliente ---
 @app.route('/cliente/<int:cliente_id>', methods=['PUT'])
+@token_required
 def modificar_cliente(cliente_id):
     data = request.json
     try:
@@ -142,6 +150,7 @@ def modificar_cliente(cliente_id):
 
 # --- Eliminar cliente ---
 @app.route('/cliente/<int:cliente_id>', methods=['DELETE'])
+@token_required
 def eliminar_cliente(cliente_id):
     try:
         conn = get_connection()

@@ -1164,3 +1164,34 @@ BEGIN
     WHERE OrdenTrabajoServicioID = p_detalle_id;
 END$$
 DELIMITER ;
+
+
+--Procedimiento para actualizar repuesto en una orden
+DELIMITER $$
+
+CREATE PROCEDURE actualizar_repuesto_orden (
+    IN p_detalle_id INT,
+    IN p_cantidad INT
+)
+BEGIN
+    UPDATE OrdenTrabajoRepuesto
+    SET Cantidad = p_cantidad
+    WHERE OrdenTrabajoRepuestoID = p_detalle_id;
+END$$
+
+DELIMITER ;
+
+--Procedimiento para actualizar servicio en una orden
+DELIMITER $$
+
+CREATE PROCEDURE actualizar_servicio_orden (
+    IN p_detalle_id INT,
+    IN p_cantidad INT
+)
+BEGIN
+    UPDATE OrdenTrabajoServicio
+    SET Cantidad = p_cantidad
+    WHERE OrdenTrabajoServicioID = p_detalle_id;
+END$$
+
+DELIMITER ;
