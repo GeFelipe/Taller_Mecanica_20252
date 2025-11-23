@@ -1,7 +1,19 @@
-from flask import Flask, request, jsonify
-import pyodbc
+#import sys
+#import os
+
+#sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+#from Seguridad.auth import token_required
+#from flask import Flask, request, jsonify
+#import pyodbc
+
 import sys
 import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from Seguridad.auth import token_required
+from flask import Flask, request, jsonify
+import pyodbc
+
 
 # --- Ajustar path para acceder a config.py ---
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -15,6 +27,7 @@ def get_connection():
 
 # --- Crear una nueva cita ---
 @app.route('/cita', methods=['POST'])
+@token_required
 def crear_cita():
     data = request.json
     try:
@@ -34,6 +47,7 @@ def crear_cita():
 
 # --- Obtener citas por cliente ---
 @app.route('/cita/cliente/<int:cliente_id>', methods=['GET'])
+@token_required
 def obtener_citas_cliente(cliente_id):
     try:
         conn = get_connection()
@@ -60,6 +74,7 @@ def obtener_citas_cliente(cliente_id):
 
 # --- Actualizar estado de una cita ---
 @app.route('/cita/<int:cita_id>/estado', methods=['PUT'])
+@token_required
 def actualizar_estado_cita(cita_id):
     data = request.json
     try:
@@ -76,6 +91,7 @@ def actualizar_estado_cita(cita_id):
 
 # --- Eliminar cita ---
 @app.route('/cita/<int:cita_id>', methods=['DELETE'])
+@token_required
 def eliminar_cita(cita_id):
     try:
         conn = get_connection()

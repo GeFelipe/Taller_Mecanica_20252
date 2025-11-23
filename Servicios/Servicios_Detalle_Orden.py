@@ -5,6 +5,9 @@ import pyodbc
 import sys
 import os
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from Seguridad.auth import token_required
+
 # --- Ajuste de ruta para acceder a config.py ---
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from config import CONNECTION_STRING
@@ -27,6 +30,7 @@ def get_connection():
 # AGREGAR MANO DE OBRA A UNA ORDEN
 # ---------------------------------------------------
 @app.route('/orden/<int:orden_id>/mano_obra', methods=['POST'])
+@token_required
 def agregar_mano_obra(orden_id):
     data = request.json
     try:
@@ -59,6 +63,7 @@ def agregar_mano_obra(orden_id):
 # AGREGAR REPUESTO A UNA ORDEN
 # ---------------------------------------------------
 @app.route('/orden/<int:orden_id>/repuesto', methods=['POST'])
+@token_required
 def agregar_repuesto(orden_id):
     data = request.json
     try:
@@ -90,6 +95,7 @@ def agregar_repuesto(orden_id):
 # AGREGAR SERVICIO A UNA ORDEN
 # ---------------------------------------------------
 @app.route('/orden/<int:orden_id>/servicio', methods=['POST'])
+@token_required
 def agregar_servicio(orden_id):
     data = request.json
     try:
@@ -116,6 +122,7 @@ def agregar_servicio(orden_id):
         conn.close()
 
 @app.route('/orden/<int:orden_id>/mano_obra', methods=['GET'])
+@token_required
 def listar_mano_obra(orden_id):
     try:
         conn = get_connection()
@@ -143,6 +150,7 @@ def listar_mano_obra(orden_id):
         conn.close()
 
 @app.route('/orden/<int:orden_id>/repuesto', methods=['GET'])
+@token_required
 def listar_repuestos(orden_id):
     try:
         conn = get_connection()
@@ -172,6 +180,7 @@ def listar_repuestos(orden_id):
 
 
 @app.route('/orden/<int:orden_id>/servicio', methods=['GET'])
+@token_required
 def listar_servicios(orden_id):
     try:
         conn = get_connection()
@@ -200,6 +209,7 @@ def listar_servicios(orden_id):
         conn.close()
 
 @app.route('/orden/detalle/mano_obra/<int:detalle_id>', methods=['PUT'])
+@token_required
 def actualizar_mano_obra(detalle_id):
     data = request.json
     try:
@@ -227,6 +237,7 @@ def actualizar_mano_obra(detalle_id):
         conn.close()
 
 @app.route('/orden/detalle/<int:detalle_id>', methods=['DELETE'])
+@token_required
 def eliminar_detalle(detalle_id):
     try:
         conn = get_connection()
@@ -245,6 +256,7 @@ def eliminar_detalle(detalle_id):
         conn.close()
 
 @app.route('/orden/detalle/repuesto/<int:detalle_id>', methods=['PUT'])
+@token_required
 def actualizar_repuesto(detalle_id):
     data = request.json
     try:
@@ -270,6 +282,7 @@ def actualizar_repuesto(detalle_id):
         conn.close()
 
 @app.route('/orden/detalle/servicio/<int:detalle_id>', methods=['PUT'])
+@token_required
 def actualizar_servicio(detalle_id):
     data = request.json
     try:

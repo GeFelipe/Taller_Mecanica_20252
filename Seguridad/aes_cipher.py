@@ -20,7 +20,14 @@ class AESCipher:
         """
 
         # Obtiene la clave recibida o la carga desde variable de entorno, luego la convierte a bytes
-        self.key = key or os.environ.get("AES_SECRET_KEY").encode()
+        #print(os.environ.get("AES_SECRET_KEY"))
+        #self.key = key or os.environ.get("AES_SECRET_KEY").encode()
+
+        secret_key = os.environ.get("AES_SECRET_KEY")
+        if secret_key is None:
+            raise ValueError("¡La variable de entorno AES_SECRET_KEY no está definida!")
+        self.key = secret_key.encode()
+
 
         # Tamaño del bloque usado por AES (generalmente 16 bytes)
         self.bs = AES.block_size

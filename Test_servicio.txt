@@ -80,24 +80,24 @@ Body (JSON):
 *********************************************************************************************************************************
 SERVICIO CITA
 -------------------------
-[POST]   http://localhost:4040/cita/crear
+[POST]   http://localhost:4040/cita
 Body (JSON):
 {
-  "cliente_id": 1,
-  "vehiculo_id": 2,
-  "fecha_cita": "2025-11-10 10:30:00",
-  "descripcion": "Mantenimiento preventivo"
+  "cliente_id": 2,
+  "vehiculo_id": 14,
+  "fecha_cita": "2025-12-01 10:30:00",
+  "descripcion": "Test Token"
 }
 
-[GET]    http://localhost:4040/cita/obtener/1
+[GET]    http://localhost:4040/cita/cliente/<int:cliente_id>
 
-[PUT]    http://localhost:4040/cita/actualizar/1
+[PUT]    http://localhost:4040/cita/<int:cita_id>/estado
 Body (JSON):
 {
   "estado": "Atendida"
 }
 
-[DELETE] http://localhost:4040/cita/eliminar/1
+[DELETE] http://localhost:4040/cita/<int:cita_id>
 
 *********************************************************************************************************************************
 SERVICIO PAGO
@@ -439,7 +439,19 @@ http://localhost:4040/orden/detalle/5
 TOKENIZACIÓN
 =========================================
 
-Levantar el servicio: python servicios_generador_token.py
+En las terminal se deben ejecutar los siguientes comandos:
+
+
+$env:AES_SECRET_KEY="12345678901234567890123456789012"
+
+$env:JWT_SECRET_KEY="supersecreto_jwt_123"
+
+python Seguridad/servicios_generador_token.py
+
+y luego:
+
+
+Levantar el servicio: python Seguridad/servicios_generador_token.py
 
 Para generar el token, por medio del metodo POST: http://localhost:4040/token/generar
 Utilizando el Json
@@ -451,6 +463,8 @@ Utilizando el Json
 }
 
 Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvX2lkIjoiVGdaTG9nMk1wa1czbi9FZ0FjQnY5Tlc4NythRkVXWlZ1M1FFaUJaY0pkbz0iLCJyb2wiOiJWRDlwYy9nMEMzaXNpMnF5VUsvK1c0S0tKZWRlYys4VUwwbTZVZDVScldNPSIsImV4cCI6MTc2Mzg2MTM4NX0.X6WaFsfpQxco9qgwniYSyKt3GL7zYcldIO-qWsFLNp8
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvX2lkIjoiTUZvYmM5NXRpZ3U3aHhZL3p2WmMxVnJGcFVyN1dHUE05L0pMbDd5SzlIaz0iLCJyb2wiOiJxemV2QTRyV1FKRVY1anFydThCS3FhRnZwY2dKOUNVVW1EeE0ranc1ZnJnPSIsImNsaWVudGVfaWQiOiJ2bCtEYmV1c1UrU0ZEaWtEekd5VjB5WUFtRmwxMmo4VHVUWEFOUS9wU3c0PSIsImlkX3N1Y3Vyc2FsIjoiVkJyUW1pMzQ3T0RTY2l2UkFkZ1hvRFFoZ1Bhci9pUHUwcTA2NEpwb3hmWT0iLCJleHAiOjE3NjM4Nzg0Njh9.ZZtDvQkwm2VgXzkMZjPAWOT23TJV18RzqfrNm2srUPk
 
 Para probar la tokenización se debe de agregar al Thunder Client dos parametros (Headers)
 Authorization: Bearer <token-generado>

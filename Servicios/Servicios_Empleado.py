@@ -5,6 +5,9 @@ import pyodbc
 import sys
 import os
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from Seguridad.auth import token_required
+
 # --- Ajustar path para acceder a config.py ---
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from config import CONNECTION_STRING
@@ -21,6 +24,7 @@ def get_connection():
 
 # --- Crear empleado ---
 @app.route('/empleado', methods=['POST'])
+@token_required
 def crear_empleado():
     data = request.json
     try:
@@ -47,6 +51,7 @@ def crear_empleado():
 
 # --- Obtener todos los empleados ---
 @app.route('/empleados', methods=['GET'])
+@token_required
 def obtener_empleados():
     try:
         conn = get_connection()
@@ -72,6 +77,7 @@ def obtener_empleados():
 
 # --- Obtener empleado por ID ---
 @app.route('/empleado/<int:empleado_id>', methods=['GET'])
+@token_required
 def obtener_empleado(empleado_id):
     try:
         conn = get_connection()
@@ -99,6 +105,7 @@ def obtener_empleado(empleado_id):
 
 # --- Modificar empleado ---
 @app.route('/empleado/<int:empleado_id>', methods=['PUT'])
+@token_required
 def modificar_empleado(empleado_id):
     data = request.json
     try:
@@ -126,6 +133,7 @@ def modificar_empleado(empleado_id):
 
 # --- Eliminar empleado ---
 @app.route('/empleado/<int:empleado_id>', methods=['DELETE'])
+@token_required
 def eliminar_empleado(empleado_id):
     try:
         conn = get_connection()
