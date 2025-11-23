@@ -5,6 +5,9 @@ import pyodbc
 import sys
 import os
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from Seguridad.auth import token_required
+
 # --- Ajustar path para acceder a config.py ---
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from config import CONNECTION_STRING
@@ -22,6 +25,7 @@ def get_connection():
 #   CREAR ORDEN DE TRABAJO
 # ===========================
 @app.route('/orden', methods=['POST'])
+@token_required
 def crear_orden():
     """
     Crea una nueva orden de trabajo y registra historial.
@@ -56,6 +60,7 @@ def crear_orden():
 #   OBTENER ORDEN COMPLETA
 # ===========================
 @app.route('/orden/<int:orden_id>', methods=['GET'])
+@token_required
 def obtener_orden(orden_id):
     """
     Retorna la orden completa con detalle, repuestos y servicios.
@@ -133,6 +138,7 @@ def obtener_orden(orden_id):
 #   FINALIZAR ORDEN
 # ===========================
 @app.route('/orden/<int:orden_id>/finalizar', methods=['PUT'])
+@token_required
 def finalizar_orden(orden_id):
     """
     Marca una orden como finalizada y la registra en historial.

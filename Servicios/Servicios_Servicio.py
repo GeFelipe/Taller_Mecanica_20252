@@ -3,6 +3,9 @@ import pyodbc
 import sys
 import os
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from Seguridad.auth import token_required
+
 # --- Ajustar path para acceder a config.py ---
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from config import CONNECTION_STRING
@@ -15,6 +18,7 @@ def get_connection():
 
 # --- Crear servicio ---
 @app.route('/servicio', methods=['POST'])
+@token_required
 def crear_servicio():
     data = request.json
     try:
@@ -34,6 +38,7 @@ def crear_servicio():
 
 # --- Obtener servicio por ID ---
 @app.route('/servicio/<int:servicio_id>', methods=['GET'])
+@token_required
 def obtener_servicio(servicio_id):
     try:
         conn = get_connection()
@@ -58,6 +63,7 @@ def obtener_servicio(servicio_id):
 
 # --- Modificar servicio ---
 @app.route('/servicio/<int:servicio_id>', methods=['PUT'])
+@token_required
 def modificar_servicio(servicio_id):
     data = request.json
     try:
@@ -77,6 +83,7 @@ def modificar_servicio(servicio_id):
 
 # --- Eliminar servicio ---
 @app.route('/servicio/<int:servicio_id>', methods=['DELETE'])
+@token_required
 def eliminar_servicio(servicio_id):
     try:
         conn = get_connection()

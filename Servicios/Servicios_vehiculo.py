@@ -3,6 +3,9 @@ import pyodbc
 import sys
 import os
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from Seguridad.auth import token_required
+
 # --- Ajustar path para acceder a config.py ---
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from config import CONNECTION_STRING
@@ -15,6 +18,7 @@ def get_connection():
 
 # --- Crear vehículo ---
 @app.route('/vehiculo', methods=['POST'])
+@token_required
 def crear_vehiculo():
     data = request.json
     try:
@@ -34,6 +38,7 @@ def crear_vehiculo():
 
 # --- Obtener vehículo por ID ---
 @app.route('/vehiculo/<int:vehiculo_id>', methods=['GET'])
+@token_required
 def obtener_vehiculo(vehiculo_id):
     try:
         conn = get_connection()
@@ -62,6 +67,7 @@ def obtener_vehiculo(vehiculo_id):
 
 # --- Modificar vehículo ---
 @app.route('/vehiculo/<int:vehiculo_id>', methods=['PUT'])
+@token_required
 def modificar_vehiculo(vehiculo_id):
     data = request.json
     try:
@@ -81,6 +87,7 @@ def modificar_vehiculo(vehiculo_id):
 
 # --- Eliminar vehículo ---
 @app.route('/vehiculo/<int:vehiculo_id>', methods=['DELETE'])
+@token_required
 def eliminar_vehiculo(vehiculo_id):
     try:
         conn = get_connection()

@@ -3,6 +3,9 @@ import pyodbc
 import sys
 import os
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from Seguridad.auth import token_required
+
 # --- Ajustar path para acceder a db_connector.py ---
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from config import CONNECTION_STRING
@@ -16,6 +19,7 @@ def get_connection():
 
 # --- Crear repuesto ---
 @app.route('/repuesto', methods=['POST'])
+@token_required
 def crear_repuesto():
     data = request.json
     try:
@@ -35,6 +39,7 @@ def crear_repuesto():
 
 # --- Obtener repuesto por ID ---
 @app.route('/repuesto/<int:repuesto_id>', methods=['GET'])
+@token_required
 def obtener_repuesto(repuesto_id):
     try:
         conn = get_connection()
@@ -61,6 +66,7 @@ def obtener_repuesto(repuesto_id):
 
 # --- Modificar repuesto ---
 @app.route('/repuesto/<int:repuesto_id>', methods=['PUT'])
+@token_required
 def modificar_repuesto(repuesto_id):
     data = request.json
     try:
@@ -80,6 +86,7 @@ def modificar_repuesto(repuesto_id):
 
 # --- Eliminar repuesto ---
 @app.route('/repuesto/<int:repuesto_id>', methods=['DELETE'])
+@token_required
 def eliminar_repuesto(repuesto_id):
     try:
         conn = get_connection()

@@ -6,6 +6,9 @@ import json
 import sys
 import os
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from Seguridad.auth import token_required
+
 # --- Ajustar path para acceder a config.py ---
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from config import CONNECTION_STRING
@@ -16,6 +19,7 @@ app = flask.Flask(__name__)
 # Crear un nuevo pago
 # ------------------------
 @app.route('/pago/crear', methods=['POST'])
+@token_required
 def crear_pago():
     try:
         data = flask.request.get_json()
@@ -39,6 +43,7 @@ def crear_pago():
 # Obtener pagos por factura
 # ------------------------
 @app.route('/pago/factura/<int:factura_id>', methods=['GET'])
+@token_required
 def obtener_pagos_por_factura(factura_id):
     try:
         conn = pyodbc.connect(CONNECTION_STRING)
@@ -68,6 +73,7 @@ def obtener_pagos_por_factura(factura_id):
 # Actualizar un pago
 # ------------------------
 @app.route('/pago/actualizar', methods=['PUT'])
+@token_required
 def actualizar_pago():
     try:
         data = flask.request.get_json()
@@ -91,6 +97,7 @@ def actualizar_pago():
 # Eliminar un pago
 # ------------------------
 @app.route('/pago/eliminar/<int:pago_id>', methods=['DELETE'])
+@token_required
 def eliminar_pago(pago_id):
     try:
         conn = pyodbc.connect(CONNECTION_STRING)

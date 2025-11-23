@@ -3,6 +3,9 @@ import pyodbc
 import sys
 import os
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from Seguridad.auth import token_required
+
 # --- Ajustar path para acceder a config.py ---
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from config import CONNECTION_STRING
@@ -15,6 +18,7 @@ def get_connection():
 
 # --- Crear proveedor ---
 @app.route('/proveedor', methods=['POST'])
+@token_required
 def crear_proveedor():
     data = request.json
     try:
@@ -34,6 +38,7 @@ def crear_proveedor():
 
 # --- Obtener proveedor por ID ---
 @app.route('/proveedor/<int:proveedor_id>', methods=['GET'])
+@token_required
 def obtener_proveedor(proveedor_id):
     try:
         conn = get_connection()
@@ -59,6 +64,7 @@ def obtener_proveedor(proveedor_id):
 
 # --- Modificar proveedor ---
 @app.route('/proveedor/<int:proveedor_id>', methods=['PUT'])
+@token_required
 def modificar_proveedor(proveedor_id):
     data = request.json
     try:
@@ -78,6 +84,7 @@ def modificar_proveedor(proveedor_id):
 
 # --- Eliminar proveedor ---
 @app.route('/proveedor/<int:proveedor_id>', methods=['DELETE'])
+@token_required
 def eliminar_proveedor(proveedor_id):
     try:
         conn = get_connection()
