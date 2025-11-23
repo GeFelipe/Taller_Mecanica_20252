@@ -15,9 +15,9 @@ Body (JSON):
   "total": 119000
 }
 
-[GET]    http://localhost:4040/factura/obtener/1
+[GET]    http://localhost:4040/factura/<int:factura_id>
 
-[PUT]    http://localhost:4040/factura/modificar/1
+[PUT]    http://localhost:4040/factura/<int:factura_id>
 Body (JSON):
 {
   "subtotal": 95000,
@@ -25,7 +25,7 @@ Body (JSON):
   "total": 113050
 }
 
-[DELETE] http://localhost:4040/factura/eliminar/1
+[DELETE] http://localhost:4040/factura/<int:factura_id>
 
 ****************************************************************************************************************************************
 SERVICIO REPUESTO

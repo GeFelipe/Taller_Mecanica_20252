@@ -1,7 +1,10 @@
 from flask import Flask, request, jsonify
 import sys, os
 
-# --- 🔧 Ajuste para importar desde el directorio raíz ---
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from Seguridad.auth import token_required
+
+# --- Ajuste para importar desde el directorio raíz ---
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from db_connector import (
@@ -17,6 +20,7 @@ app = Flask(__name__)
 # ENDPOINT: Crear Factura
 # ---------------------------------------------------------
 @app.route('/factura', methods=['POST'])
+@token_required
 def crear_factura_endpoint():
     data = request.get_json()
     orden_trabajo_id = data.get('OrdenTrabajoID')
@@ -32,6 +36,7 @@ def crear_factura_endpoint():
 # ENDPOINT: Consultar Factura por ID
 # ---------------------------------------------------------
 @app.route('/factura/<int:factura_id>', methods=['GET'])
+@token_required
 def obtener_factura_endpoint(factura_id):
     columnas, resultados = obtener_factura_por_id(factura_id)
     
@@ -46,6 +51,7 @@ def obtener_factura_endpoint(factura_id):
 #  ENDPOINT: Modificar Factura
 # ---------------------------------------------------------
 @app.route('/factura/<int:factura_id>', methods=['PUT'])
+@token_required
 def modificar_factura_endpoint(factura_id):
     data = request.get_json()
     subtotal = data.get('Subtotal')
@@ -60,6 +66,7 @@ def modificar_factura_endpoint(factura_id):
 # ENDPOINT: Eliminar Factura
 # ---------------------------------------------------------
 @app.route('/factura/<int:factura_id>', methods=['DELETE'])
+@token_required
 def eliminar_factura_endpoint(factura_id):
     columnas, resultado = eliminar_factura(factura_id)
     return jsonify({'mensaje': '🗑️ Factura eliminada correctamente.'})

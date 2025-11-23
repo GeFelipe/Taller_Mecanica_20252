@@ -5,6 +5,9 @@ import pyodbc
 import sys
 import os
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from Seguridad.auth import token_required
+
 # --- Ajustar path para acceder a config.py ---
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from config import CONNECTION_STRING
@@ -21,6 +24,7 @@ def get_connection():
 
 # --- Obtener historial completo por ID de vehículo ---
 @app.route('/historial/<int:vehiculo_id>', methods=['GET'])
+@token_required
 def obtener_historial_por_vehiculo(vehiculo_id):
     try:
         conn = get_connection()
@@ -68,6 +72,7 @@ def obtener_historial_por_vehiculo(vehiculo_id):
 
 # --- Obtener todos los historiales ---
 @app.route('/historiales', methods=['GET'])
+@token_required
 def obtener_todos_historiales():
     try:
         conn = get_connection()
