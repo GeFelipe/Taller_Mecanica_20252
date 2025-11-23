@@ -15,9 +15,9 @@ Body (JSON):
   "Total": 119000
 }
 
-[GET]    http://localhost:4040/factura/obtener/1
+[GET]    http://localhost:4040/factura/<int:factura_id>
 
-[PUT]    http://localhost:4040/factura/modificar/1
+[PUT]    http://localhost:4040/factura/<int:factura_id>
 Body (JSON):
 {
   "subtotal": 95000,
@@ -25,7 +25,7 @@ Body (JSON):
   "total": 113050
 }
 
-[DELETE] http://localhost:4040/factura/eliminar/1
+[DELETE] http://localhost:4040/factura/<int:factura_id>
 
 ****************************************************************************************************************************************
 SERVICIO REPUESTO
@@ -57,7 +57,7 @@ Body (JSON):
 ************************************************************************************************************************************
 SERVICIO SERVICIO (CATÁLOGO DE SERVICIOS)
 -------------------------
-[POST]   http://localhost:4040/servicio/crear
+[POST]   http://localhost:4040/servicio
 Body (JSON):
 {
   "nombre": "Cambio de aceite",
@@ -65,7 +65,7 @@ Body (JSON):
   "precio_base": 80000
 }
 
-[GET]    http://localhost:4040/servicio/obtener/1
+[GET]    http://localhost:4040/servicio/idservicio
 
 [PUT]    http://localhost:4040/servicio/modificar/1
 Body (JSON):
@@ -110,13 +110,14 @@ Body (JSON):
   "metodo": "Tarjeta"
 }
 
-[GET]    http://localhost:4040/pago/obtener/1
+[GET]    http://localhost:4040/pago/factura/1
 
-[PUT]    http://localhost:4040/pago/actualizar/1
+[PUT]    http://localhost:4040/pago/actualizar
 Body (JSON):
 {
-  "nuevo_monto": 120000,
-  "nuevo_metodo": "Transferencia"
+  "pago_id": 2,
+  "nuevo_monto": 15000,
+  "nuevo_metodo": "Efectivo"
 }
 
 [DELETE] http://localhost:4040/pago/eliminar/1
@@ -172,7 +173,7 @@ Body (JSON):
 OBTENER PROVEEDOR POR ID
 -------------------------------------------
 Método: GET
-URL: http://localhost:4040/proveedor/1
+URL: http://localhost:4040/proveedor/3
 
 -------------------------------------------
 MODIFICAR PROVEEDOR
